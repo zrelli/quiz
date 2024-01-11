@@ -9,7 +9,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Quiz extends Model
 {
-    use BelongsToTenant;
+    use BelongsToTenant,HasFactory;
 
     public function questions(): HasMany
     {

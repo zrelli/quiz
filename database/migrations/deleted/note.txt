@@ -1,0 +1,2 @@
+Since only a single user develop this project and it is not in production mode We could update migration files manually without
+version control feature using artisan migration updating tables schemas

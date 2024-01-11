@@ -1,14 +1,9 @@
 <?php
-
 namespace Database\Seeders;
-
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-
-class TenantSeeder extends Seeder
+class TenantTableSeeder extends Seeder
 {
     /**
      * Seed the application's database.

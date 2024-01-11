@@ -16,9 +16,10 @@ return new class extends Migration
             $table->foreign('tenant_id')
                 ->references('id')
                 ->on('tenants')
-                ->onDelete('set null'); //The superadmin user should not be associated with a tenant.
+                ->onDelete('set null');//The superadmin user should not be associated with a tenant.
         });
     }
+
     /**
      * Reverse the migrations.
      */

@@ -13,11 +13,24 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id');
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('description')->nullable()->default(null);
+            $table->text('description')->nullable();
+            $table->unsignedInteger('max_attempts')->default(1);
+            $table->enum('test_type', ['in_time', 'out_of_time'])->default('out_of_time');
+            //if is not out of time it should have a quiz_period_time record
+            $table->boolean('is_out_of_time')->default(true);
+            $table->boolean('is_expired')->default(false);
             $table->timestamps();
+            $table->foreign('tenant_id')
+            ->references('id')
+            ->on('tenants')
+            ->onDelete('cascade');
+
+
+
+            
         });
     }
 

@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id');
-            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('tenant_id');// todo we will add global scope to show only current tenant questions
+            $table->unsignedBigInteger('quiz_id');
+            $table->foreign('quiz_id')->on('quizzes')->references('id')->onDelete('cascade');
             $table->string('question');
             $table->string('slug')->unique();
-            $table->string('description')->nullable()->default(null);
+            $table->text('description')->nullable();
+            $table->boolean('is_choices_randomly_ordered')->default(true);
+            $table->boolean('has_multiple_answers')->default(false); // we will set all false
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

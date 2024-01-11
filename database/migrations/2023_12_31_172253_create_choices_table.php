@@ -13,17 +13,16 @@ return new class extends Migration
     {
         Schema::create('choices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id');
-            $table->foreignId('question_id')->constrained()->onDelete('cascade');
-            $table->string('title');
+            // $table->foreignId('tenant_id');//todo
+            $table->unsignedBigInteger('question_id');
+            $table->foreign('question_id')->on('questions')->references('id')->onDelete('cascade');
             $table->boolean('is_correct')->default(false);
-            $table->integer('order')->default(0);
-            $table->string('description')->nullable()->default(null);
-            $table->string('explanation')->nullable()->default(null);
+            $table->unsignedInteger('order')->nullable();
+            $table->text('description')->nullable();
+            $table->text('explanation')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
