@@ -25,7 +25,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('quizzes')
                 ->onDelete('cascade');
-                $table->unique(['member_id', 'quiz_id']);
+                // $table->unique(['member_id', 'quiz_id']); // uncommented to avoid keys duplication error (dev)
             $table->timestamps();
         });
     }

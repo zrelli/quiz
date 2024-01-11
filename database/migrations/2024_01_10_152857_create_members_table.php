@@ -21,7 +21,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade');
-            $table->unique(['tenant_id', 'user_id']);
+            // $table->unique(['tenant_id', 'user_id']);// uncommented to avoid keys duplication error (dev)
             $table->timestamps();
         });
     }

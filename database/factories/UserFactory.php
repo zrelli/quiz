@@ -2,9 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -40,5 +44,22 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            if($user->id ==2){
+                //set role to admin
+                $user->assignRole(RolesEnum::ADMIN);
+                $permission = Permission::whereName(PermissionsEnum::MANAGEQUIZZES)->first();
+                //set direct permission to admin
+                $user->givePermissionTo($permission);
+
+
+            }
+           
+
+
+        });
     }
 }
