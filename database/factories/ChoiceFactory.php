@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,13 +17,26 @@ class ChoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'question_id' => Question::inRandomOrder()->first()->id,
-            'is_correct' => fake()->boolean,
+            // 'question_id' => Question::inRandomOrder()->first()->id,
+            // 'is_correct' => fake()->boolean,// all first created choices are true
             // 'order' => fake()->numberBetween(1, 10),//todo 
             'description' => fake()->paragraph,
             'explanation' => fake()->paragraph,
             'created_at' => now(),
             'updated_at' => now(),
         ];
+    }
+    /**
+     * Indicate that the question belongs to a specific quiz.
+     *
+     * @param  int  $quizId
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function forQuestion(int $questionId, $isCorrect = false): ChoiceFactory
+    {
+        return $this->state([
+            'question_id' => $questionId,
+            'is_correct' => $isCorrect
+        ]);
     }
 }

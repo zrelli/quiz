@@ -1,10 +1,7 @@
 <?php
-
 namespace Database\Seeders;
-
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-
 class UserTableSeeder extends Seeder
 {
     /**
@@ -12,7 +9,20 @@ class UserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory(10)->create();
-  
+        $totalAdminsAndSupervisors = 10;//20;
+        $totalMembers =10; //100;
+        User::factory()->forSuperAdmin()->create();
+        User::factory()->resetIndex();
+        for ($i = 0; $i < $totalAdminsAndSupervisors; $i++) {
+            User::factory()->forAdmin()->create();
+        }
+        User::factory()->resetIndex();
+        for ($i = 0; $i < $totalAdminsAndSupervisors; $i++) {
+            User::factory()->forSupervisor()->create();
+        }
+        User::factory()->resetIndex();
+        for ($i = 0; $i < $totalMembers; $i++) {
+            User::factory()->forMember()->create();
+        }
     }
 }

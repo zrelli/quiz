@@ -18,12 +18,12 @@ class QuestionFactory extends Factory
         $question = fake()->sentence;
         $slug = Str::slug($question);
         return [
-            'quiz_id' => Quiz::inRandomOrder()->first()->id,
+            // 'quiz_id' => Quiz::inRandomOrder()->first()->id,
             'question' => $question,
             'slug' => $slug,
             'description' => fake()->paragraph,
-            'is_choices_randomly_ordered' => fake()->boolean,
-            'has_multiple_answers' => fake()->boolean,
+            // 'is_choices_randomly_ordered' => fake()->boolean,
+            // 'has_multiple_answers' => fake()->boolean,
             'created_at' => now(),
             'updated_at' => now(),
         ];

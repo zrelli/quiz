@@ -1,6 +1,11 @@
 <?php
+
 namespace Database\Seeders;
+
+use App\Models\Choice;
+use App\Models\Question;
 use Illuminate\Database\Seeder;
+
 class ChoiceTableSeeder extends Seeder
 {
     /**
@@ -8,18 +13,13 @@ class ChoiceTableSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Choice::factory(100)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(2)->create();
+        $questions  = Question::all();
+        foreach ($questions as $question) {
+            $totalChoices = 5;
+            for ($i = 0; $i < $totalChoices; $i++) {
+                $isCorrect = $i == 0 ? true : false;
+                Choice::factory()->forQuestion($question->id, $isCorrect)->create();
+            }
+        }
     }
 }

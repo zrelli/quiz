@@ -1,8 +1,13 @@
 <?php
+
 namespace Database\Seeders;
+
+use App\Enums\RolesEnum;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
+
 class TenantTableSeeder extends Seeder
 {
     /**
@@ -10,14 +15,10 @@ class TenantTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-        $users->shift();
-        foreach ($users as $user) {
-            $tenantIdentifier = 'tenant_' . ($user->id - 1);
-            $tenant = Tenant::create(['id' => $tenantIdentifier]);
-            $tenant->domains()->create(['domain' => ('tenant' . $user->id - 1) . '.quizzes.test']);
-            $user->tenant_id = $tenantIdentifier;
-            $user->save();
+        $totalAdmins  = User::role(RolesEnum::ADMIN)->count();
+        // Log::info($totalAdmins);
+        for ($i = 0; $i < $totalAdmins; $i++) {
+            Tenant::factory()->setTenantIdFromIndex()->create();
         }
     }
 }

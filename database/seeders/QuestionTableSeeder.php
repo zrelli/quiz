@@ -1,6 +1,11 @@
 <?php
+
 namespace Database\Seeders;
+
+use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Database\Seeder;
+
 class QuestionTableSeeder extends Seeder
 {
     /**
@@ -8,18 +13,12 @@ class QuestionTableSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Question::factory(10)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(1)->create();
-        // Question::factory()->forQuiz(2)->create();
+        $quizzes  = Quiz::all();
+        foreach ($quizzes as $quiz) {
+            $totalQuestions = 10;
+            for ($i = 0; $i < $totalQuestions; $i++) {
+                Question::factory()->forQuiz($quiz->id)->create();
+            }
+        }
     }
 }

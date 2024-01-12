@@ -1,16 +1,24 @@
 <?php
+
 namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\RolesEnum;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Log\Logger;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
-class User extends Authenticatable
+
+class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, BelongsToTenant,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, BelongsToTenant, HasRoles;
     /**
      * The attributes that are mass assignable.
      *
@@ -21,7 +29,6 @@ class User extends Authenticatable
         'email',
         'password',
     ];
-  
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -43,5 +50,20 @@ class User extends Authenticatable
     public function member(): HasOne
     {
         return $this->hasOne(Member::class, 'user_id');
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        
+        if ($this->tenant_id) {
+            $url = url()->current();
+            $domain = Domain::where('tenant_id', $this->tenant_id)->first();
+            if ($domain) {
+                return  Str::contains($url, $domain->domain);
+            }
+            return false;
+        } else {
+
+            return    $this->hasRole(RolesEnum::SUPERADMIN);
+        }
     }
 }
