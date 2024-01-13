@@ -19,8 +19,8 @@ return new class extends Migration
             $table->enum('test_type', ['in_time', 'out_of_time'])->default('out_of_time');
             $table->timestamp('expired_at')->default(now());
             //if is not out of time it should have a quiz_period_time record
-            $table->boolean('is_out_of_time')->default(true);
-            $table->boolean('is_expired')->default(false);
+            $table->boolean('is_out_of_time')->default(true);//to delete
+            $table->boolean('is_expired')->default(false);//to delete 
             $table->timestamps();
             $table->foreign('tenant_id')
             ->references('id')

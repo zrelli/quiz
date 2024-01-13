@@ -91,7 +91,7 @@ class UserFactory extends Factory
     {
         $memberName = "member" . self::$index;
         $memberEmail = $memberName . "@masaq.com";
-        return $this->state(['name' => $memberName, "email" => $memberEmail, 'password' => Hash::make(static::$SupervisorPassword)]);
+        return $this->state(['name' => $memberName, "email" => $memberEmail, 'password' => Hash::make(static::$MemberPassword)]);
     }
     public static function resetIndex()
     {

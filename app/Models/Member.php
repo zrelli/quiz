@@ -10,6 +10,9 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 class Member  extends Model
 {
    use BelongsToTenant , HasFactory;
-   
+   public function user()
+   {
+       return $this->belongsTo(User::class);
+   }
 
 }
