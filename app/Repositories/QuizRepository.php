@@ -1,55 +1,57 @@
 <?php
 namespace App\Repositories;
-use App\Models\User;
+use App\Models\Quiz;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 /**
- * Class UserRepository
+ * Class QuizRepository
  */
-class UserRepository extends BaseRepository
+class QuizRepository extends BaseRepository
 {
     public $fieldSearchable = [
         'email',
     ];
+    
     public function getFieldsSearchable()
     {
         return $this->fieldSearchable;
     }
+    
     public function model()
     {
-        return User::class;
+        return Quiz::class;
     }
     /**
      * @return mixed
      */
     public function store(array $input)
     {
-        $userInputArray = Arr::only(
+        $quizInputArray = Arr::only(
             $input,
             ['name', 'email', 'password']
         );
-        $userInputArray["password"] =  Hash::make($userInputArray['password']);
+        $quizInputArray["password"] =  Hash::make($quizInputArray['password']);
         try {
-            $user =  User::create($userInputArray);
+            $user =  Quiz::create($quizInputArray);
             DB::commit();
             return $user;
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
-    public function update($input,  $user)
+    public function update($input,  $quiz)
     {
-        $userInputArray = Arr::only(
+        $quizInputArray = Arr::only(
             $input,
             ['name']
         );
         try {
             DB::beginTransaction();
-            $user->update($userInputArray);
+            $quiz->update($quizInputArray);
             DB::commit();
-            return $user;
+            return $quiz;
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }

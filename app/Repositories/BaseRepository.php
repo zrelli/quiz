@@ -1,10 +1,15 @@
 <?php
+
 namespace App\Repositories;
+
 use Exception;
 use Illuminate\Container\Container as Application;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use function Laravel\Prompts\search;
+use function PHPUnit\Framework\isEmpty;
+
 abstract class BaseRepository
 {
     /**
@@ -15,7 +20,9 @@ abstract class BaseRepository
      * @var Application
      */
     protected $app;
+    protected $paginationFilter = [];
     /**
+     * 
      * @throws \Exception
      */
     public function __construct(Application $app)
@@ -50,6 +57,10 @@ abstract class BaseRepository
         }
         return $this->model = $model;
     }
+    public function setPaginationFilter($filter)
+    {
+        $this->paginationFilter = $filter;
+    }
     /**
      * Paginate records for scaffold.
      *
@@ -59,7 +70,9 @@ abstract class BaseRepository
      */
     public function paginate($perPage, $columns = ['*'])
     {
-        $query = $this->allQuery();
+        $search = $this->paginationFilter;
+        $query = $this->allQuery($search);
+        $this->paginationFilter = [];
         // return $query->paginate($perPage, $columns);
         return $query->simplePaginate($perPage, $columns);
     }

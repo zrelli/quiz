@@ -1,36 +1,35 @@
 <?php
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
-use App\Models\User;
-use App\Repositories\UserRepository;
+use App\Models\Choice;
+use App\Repositories\ChoiceRepository;
 use App\Traits\ApiRequestValidationTrait;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\ResponseTrait;
-use Illuminate\Support\Facades\Validator;
-class UserController extends AppBaseController
+class ChoiceController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
     /**
-     * @var UserRepository
+     * @var ChoiceRepository
      */
-    public $userRepo;
+    public $choiceRepo;
     /**
      * UserController constructor.
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(ChoiceRepository $choiceRepository)
     {
-        $this->userRepo = $userRepository;
+        $this->choiceRepo = $choiceRepository;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = $this->userRepo->paginate(10);
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $this->choiceRepo->setPaginationFilter(['question_id' => $lastParameter]);
+        $users = $this->choiceRepo->paginate(10);
         //todo set message
         return $this->sendResponse($users, '');
     }
@@ -40,31 +39,34 @@ class UserController extends AppBaseController
     public function store(Request $request)
     {
         $input = $this->processRequest($request, StoreUserRequest::class);
-        $user =  $this->userRepo->store($input);
+        $user =  $this->choiceRepo->store($input);
         return $this->sendResponse($user, '');
     }
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show($choice)
     {
-        return $this->sendResponse($user, '');
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $choice =  $this->choiceRepo->find($lastParameter);
+        return $this->sendResponse($choice, '');
     }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Choice $choice)
     {
         $input = $request->all();
-        $this->userRepo->update($input, $user);
+        $this->choiceRepo->update($input, $choice);
         return $this->sendSuccess('user updated successfully');
     }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Choice $choice)
     {
-        $this->userRepo->delete($user);
+        $this->choiceRepo->delete($choice);
         return $this->sendSuccess('user deleted successfully');
     }
 }

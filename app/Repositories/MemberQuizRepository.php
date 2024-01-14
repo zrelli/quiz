@@ -1,55 +1,60 @@
 <?php
 namespace App\Repositories;
-use App\Models\User;
+
+use App\Models\MemberQuiz;
+use App\Models\Question;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 /**
- * Class UserRepository
+ * Class MemberQuizRepository
  */
-class UserRepository extends BaseRepository
+class MemberQuizRepository extends BaseRepository
 {
     public $fieldSearchable = [
-        'email',
+        'quiz_id'
     ];
+    
+    
     public function getFieldsSearchable()
     {
         return $this->fieldSearchable;
     }
+    
     public function model()
     {
-        return User::class;
+        return MemberQuiz::class;
     }
     /**
      * @return mixed
      */
     public function store(array $input)
     {
-        $userInputArray = Arr::only(
+        $memberQuizInputArray = Arr::only(
             $input,
             ['name', 'email', 'password']
         );
-        $userInputArray["password"] =  Hash::make($userInputArray['password']);
+        $memberQuizInputArray["password"] =  Hash::make($memberQuizInputArray['password']);
         try {
-            $user =  User::create($userInputArray);
+            $memberQuiz =  MemberQuiz::create($memberQuizInputArray);
             DB::commit();
-            return $user;
+            return $memberQuiz;
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
-    public function update($input,  $user)
+    public function update($input,  $memberQuiz)
     {
-        $userInputArray = Arr::only(
+        $memberQuizInputArray = Arr::only(
             $input,
             ['name']
         );
         try {
             DB::beginTransaction();
-            $user->update($userInputArray);
+            $memberQuiz->update($memberQuizInputArray);
             DB::commit();
-            return $user;
+            return $memberQuiz;
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }

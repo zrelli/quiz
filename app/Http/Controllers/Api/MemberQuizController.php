@@ -1,36 +1,33 @@
 <?php
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
-use App\Models\User;
-use App\Repositories\UserRepository;
+use App\Models\MemberQuiz;
+use App\Repositories\MemberQuizRepository;
 use App\Traits\ApiRequestValidationTrait;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\ResponseTrait;
-use Illuminate\Support\Facades\Validator;
-class UserController extends AppBaseController
+class MemberQuizController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
     /**
-     * @var UserRepository
+     * @var MemberQuizRepository
      */
-    public $userRepo;
+    public $memberQuizRepo;
     /**
      * UserController constructor.
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(MemberQuizRepository $memberQuizRepository)
     {
-        $this->userRepo = $userRepository;
+        $this->memberQuizRepo = $memberQuizRepository;
     }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        $users = $this->userRepo->paginate(10);
+        $this->memberQuizRepo->setPaginationFilter(['quiz_id'=>$id]);
+        $users = $this->memberQuizRepo->paginate(10);
         //todo set message
         return $this->sendResponse($users, '');
     }
@@ -40,31 +37,31 @@ class UserController extends AppBaseController
     public function store(Request $request)
     {
         $input = $this->processRequest($request, StoreUserRequest::class);
-        $user =  $this->userRepo->store($input);
+        $user =  $this->memberQuizRepo->store($input);
         return $this->sendResponse($user, '');
     }
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(MemberQuiz $memberQuiz)
     {
-        return $this->sendResponse($user, '');
+        return $this->sendResponse($memberQuiz, '');
     }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, MemberQuiz $memberQuiz)
     {
         $input = $request->all();
-        $this->userRepo->update($input, $user);
-        return $this->sendSuccess('user updated successfully');
+        $this->memberQuizRepo->update($input, $memberQuiz);
+        return $this->sendSuccess('choice updated successfully');
     }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(MemberQuiz $memberQuiz)
     {
-        $this->userRepo->delete($user);
-        return $this->sendSuccess('user deleted successfully');
+        $this->memberQuizRepo->delete($memberQuiz);
+        return $this->sendSuccess('choice deleted successfully');
     }
 }
