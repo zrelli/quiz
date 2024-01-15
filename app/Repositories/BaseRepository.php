@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Repositories;
-
 use Exception;
 use Illuminate\Container\Container as Application;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,7 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use function Laravel\Prompts\search;
 use function PHPUnit\Framework\isEmpty;
-
 abstract class BaseRepository
 {
     /**
@@ -21,6 +18,7 @@ abstract class BaseRepository
      */
     protected $app;
     protected $paginationFilter = [];
+    protected $relationQuery = [];
     /**
      * 
      * @throws \Exception
@@ -60,6 +58,10 @@ abstract class BaseRepository
     public function setPaginationFilter($filter)
     {
         $this->paginationFilter = $filter;
+    }
+    public function setRelationQuery($value)
+    {
+        $this->relationQuery = $value;
     }
     /**
      * Paginate records for scaffold.
@@ -124,8 +126,12 @@ abstract class BaseRepository
      */
     public function create($input)
     {
+        if(!isEmpty($this->relationQuery)){
+            $input = [...$this->relationQuery,...$input];
+        }
         $model = $this->model->newInstance($input);
         $model->save();
+        $this->relationQuery = [];
         return $model;
     }
     /**

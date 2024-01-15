@@ -29,13 +29,15 @@ class ChoiceRepository extends BaseRepository
     {
         $choiceInputArray = Arr::only(
             $input,
-            ['name', 'email', 'password']
+            ['description', 'explanation','is_correct']
         );
-        $choiceInputArray["password"] =  Hash::make($choiceInputArray['password']);
         try {
-            $user =  Choice::create($choiceInputArray);
+            if(!empty([$this->relationQuery])){
+                $choiceInputArray = [...$this->relationQuery,...$choiceInputArray];
+            }
+            $choice =  Choice::create($choiceInputArray);
             DB::commit();
-            return $user;
+            return $choice;
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -44,7 +46,7 @@ class ChoiceRepository extends BaseRepository
     {
         $choiceInputArray = Arr::only(
             $input,
-            ['name']
+            ['description', 'explanation','is_correct']
         );
         try {
             DB::beginTransaction();

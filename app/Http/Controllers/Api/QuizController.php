@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\StoreQuizRequest;
+use App\Http\Requests\UpdateQuizRequest;
+use App\Http\Resources\QuizResource;
 use App\Models\Quiz;
 use App\Repositories\QuizRepository;
 use App\Traits\ApiRequestValidationTrait;
@@ -26,9 +28,9 @@ class QuizController extends AppBaseController
      */
     public function index()
     {
-        $quizzes = $this->quizRepo->paginate(10);
-        //todo set message
-        return $this->sendResponse($quizzes, '');
+        $quizzes = $this->quizRepo->paginate(QUIZZES_PER_PAGE);
+        $quizzes = QuizResource::collection($quizzes);
+        return $this->sendResponse($quizzes);
     }
     /**
      * Store a newly created resource in storage.
@@ -36,31 +38,44 @@ class QuizController extends AppBaseController
     public function store(Request $request)
     {
         $input = $this->processRequest($request, StoreQuizRequest::class);
-        $Quiz =  $this->quizRepo->store($input);
-        return $this->sendResponse($Quiz, '');
+        $quiz =  $this->quizRepo->store($input);
+        $quiz = new QuizResource($quiz);
+        return $this->sendResponse($quiz);
     }
     /**
      * Display the specified resource.
      */
     public function show(Quiz $quiz)
     {
-        return $this->sendResponse($quiz, '');
+        $quiz = new QuizResource($quiz);
+        return $this->sendResponse($quiz);
     }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Quiz $Quiz)
+    public function update(Request $request, Quiz $quiz)
     {
-        $input = $request->all();
-        $this->quizRepo->update($input, $Quiz);
-        return $this->sendSuccess('Quiz updated successfully');
+        $input = $this->processRequest($request, UpdateQuizRequest::class);
+        $this->quizRepo->update($input, $quiz);
+        return $this->sendSuccess('quiz updated successfully');
     }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $Quiz)
+    public function destroy(Quiz $quiz)
     {
-        $this->quizRepo->delete($Quiz);
-        return $this->sendSuccess('Quiz deleted successfully');
+        $this->quizRepo->delete($quiz);
+        return $this->sendSuccess('quiz deleted successfully');
+    }
+    public function increaseQuizAttempts(Quiz $quiz){
+        $quiz->max_attempts++;
+        $quiz->save();
+        return $this->sendSuccess('quiz updated successfully');
+    }
+    public function closeQuiz(Quiz $quiz){
+        $quiz->expired_at = now();
+        $quiz->is_expired = true;
+        $quiz->save();
+        return $this->sendSuccess('quiz updated successfully');
     }
 }

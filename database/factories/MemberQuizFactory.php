@@ -1,9 +1,6 @@
 <?php
-
 namespace Database\Factories;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MemberQuiz>
  */
@@ -35,7 +32,7 @@ class MemberQuizFactory extends Factory
     public function MemberSubscribeToQuiz($memberId, $quizId): MemberQuizFactory
     {
         // $memberName = "member" . self::$index;
-        // $memberEmail = $memberName . "@masaq.com";
+        // $memberEmail = $memberName . "@msaaq.com";
         return $this->state(
             [
                 'member_id' => $memberId,

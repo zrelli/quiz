@@ -1,12 +1,9 @@
 <?php
-
 namespace Database\Factories;
-
 use App\Models\Quiz;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quiz>
  */
@@ -50,11 +47,11 @@ class QuizFactory extends Factory
     public function forOutOfTimeQuiz($tenantId): QuizFactory
     {
         // $memberName = "member" . self::$index;
-        // $memberEmail = $memberName . "@masaq.com";
+        // $memberEmail = $memberName . "@msaaq.com";
         return $this->state(
             [
                 'test_type' => 'out_of_time',
-                'is_out_of_time' => true,
+                // 'is_out_of_time' => true,
                 'tenant_id' => $tenantId,
                 // 'expired_at'=>$expiredAt,
             ]
@@ -68,11 +65,11 @@ class QuizFactory extends Factory
     public function forInTimeQuiz($tenantId): QuizFactory
     {
         // $memberName = "member" . self::$index;
-        // $memberEmail = $memberName . "@masaq.com";
+        // $memberEmail = $memberName . "@msaaq.com";
         return $this->state(
             [
                 'test_type' => 'in_time',
-                'is_out_of_time' => false,
+                // 'is_out_of_time' => false,
                 'tenant_id' => $tenantId,
                 'expired_at' => now(), //fake
             ]

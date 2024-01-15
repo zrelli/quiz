@@ -1,11 +1,8 @@
 <?php
-
 namespace Database\Factories;
-
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tenant>
  */
@@ -26,9 +23,9 @@ class TenantFactory extends Factory
         return $this->afterCreating(function (Tenant $tenant) {
             $tenant->domains()->create(['domain' => $tenant->id . '.quizzes.test']);
             // set tenant_id to admins;
-            $adminEmail = "admin" . self::$index . "@masaq.com";
-            $supervisorEmail = "supervisor" . self::$index . "@masaq.com";
-            $memberEmail = "member" . self::$index . "@masaq.com";
+            $adminEmail = "admin" . self::$index . "@msaaq.com";
+            $supervisorEmail = "supervisor" . self::$index . "@msaaq.com";
+            $memberEmail = "member" . self::$index . "@msaaq.com";
             $admin = User::where('email', $adminEmail)->first();
             $admin->tenant_id = $tenant->id;
             $admin->save();

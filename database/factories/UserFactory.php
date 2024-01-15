@@ -58,7 +58,7 @@ class UserFactory extends Factory
      */
     public function forSuperAdmin(): UserFactory
     {
-        return $this->state(['email' => "superadmin@masaq.com", 'name' => 'superadmin', 'password' => Hash::make(static::$SuperAdminPassword)]);
+        return $this->state(['email' => "superadmin@msaaq.com", 'name' => 'superadmin', 'password' => Hash::make(static::$SuperAdminPassword)]);
     }
     /**
      * Admin Custom Fields
@@ -68,7 +68,7 @@ class UserFactory extends Factory
     public function forAdmin(): UserFactory
     {
         $adminName = "admin" . self::$index;
-        $adminEmail = $adminName . "@masaq.com";
+        $adminEmail = $adminName . "@msaaq.com";
         return $this->state(['name' => $adminName, "email" => $adminEmail, 'password' => Hash::make(static::$AdminPassword)]);
     }
     /**
@@ -79,7 +79,7 @@ class UserFactory extends Factory
     public function forSupervisor(): UserFactory
     {
         $supervisorName = "supervisor" . self::$index;
-        $supervisorEmail = $supervisorName . "@masaq.com";
+        $supervisorEmail = $supervisorName . "@msaaq.com";
         return $this->state(['name' => $supervisorName, "email" => $supervisorEmail, 'password' => Hash::make(static::$SupervisorPassword)]);
     }
     /**
@@ -90,7 +90,7 @@ class UserFactory extends Factory
     public function forMember(): UserFactory
     {
         $memberName = "member" . self::$index;
-        $memberEmail = $memberName . "@masaq.com";
+        $memberEmail = $memberName . "@msaaq.com";
         return $this->state(['name' => $memberName, "email" => $memberEmail, 'password' => Hash::make(static::$MemberPassword)]);
     }
     public static function resetIndex()

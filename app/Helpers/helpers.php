@@ -1,9 +1,11 @@
 <?php
-
 use App\Enums\RolesEnum;
 use App\Models\Domain;
 use Illuminate\Support\Str;
-
+const USERS_PER_PAGE = 10;
+const QUIZZES_PER_PAGE = 10;
+const QUESTIONS_PER_PAGE = 10;
+const CHOICES_PER_PAGE = 10;
 if (!function_exists('isDashboardSuperadmin')) {
     function isDashboardSuperadmin()
     {

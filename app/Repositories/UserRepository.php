@@ -43,8 +43,11 @@ class UserRepository extends BaseRepository
     {
         $userInputArray = Arr::only(
             $input,
-            ['name']
+            ['name','email','password']
         );
+        if (array_key_exists('password', $userInputArray)) {
+            $input['password'] = Hash::make($userInputArray['password']);
+        }
         try {
             DB::beginTransaction();
             $user->update($userInputArray);

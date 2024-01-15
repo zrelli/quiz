@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
-
 class UpdateChoiceRequest extends FormRequest
 {
     /**
@@ -13,7 +10,6 @@ class UpdateChoiceRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +18,8 @@ class UpdateChoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'explanation' => 'nullable|string|min:10|max:500',
+            'description' => 'nullable|string|min:10|max:500',
         ];
     }
 }

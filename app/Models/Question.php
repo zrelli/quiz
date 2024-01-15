@@ -3,6 +3,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToPrimaryModel;
 // use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 class Question extends Model
@@ -14,6 +15,13 @@ class Question extends Model
     // {
     //     return $this->belongsTo(Quiz::class);
     // }
+    protected static function boot()
+    {
+        parent::boot();
+        static::saving(function ($question) {
+            $question->slug = Str::slug($question->question);
+        });
+    }
     public function getRelationshipToPrimaryModel(): string
     {
         return 'quiz';

@@ -1,16 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Traits\ApiRequestValidationTrait;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\ResponseTrait;
-use Illuminate\Support\Facades\Validator;
 class UserController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
@@ -30,9 +28,9 @@ class UserController extends AppBaseController
      */
     public function index()
     {
-        $users = $this->userRepo->paginate(10);
-        //todo set message
-        return $this->sendResponse($users, '');
+        $users = $this->userRepo->paginate(USERS_PER_PAGE);
+        $users = UserResource::collection($users);
+        return $this->sendResponse($users);
     }
     /**
      * Store a newly created resource in storage.
@@ -41,21 +39,23 @@ class UserController extends AppBaseController
     {
         $input = $this->processRequest($request, StoreUserRequest::class);
         $user =  $this->userRepo->store($input);
-        return $this->sendResponse($user, '');
+        $user = new UserResource($user);
+        return $this->sendResponse($user);
     }
     /**
      * Display the specified resource.
      */
     public function show(User $user)
     {
-        return $this->sendResponse($user, '');
+        $user = new UserResource($user);
+        return $this->sendResponse($user);
     }
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, User $user)
     {
-        $input = $request->all();
+        $input = $this->processRequest($request, UpdateUserRequest::class);
         $this->userRepo->update($input, $user);
         return $this->sendSuccess('user updated successfully');
     }

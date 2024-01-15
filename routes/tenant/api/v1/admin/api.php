@@ -20,8 +20,13 @@ require __DIR__ . '/auth.php';
 Route::middleware('auth:sanctum')->get('/profile', function (Request $request) {
     return $request->user();
 });
-Route::resource('users', UserController::class);
-Route::resource('quizzes', QuizController::class);
-Route::resource('quizzes.questions', QuestionController::class);
-Route::resource('quizzes.questions.choices', ChoiceController::class);
-Route::resource('quizzes.online-exams', MemberQuizController::class);
+Route::middleware(['isAdmin','auth:sanctum'])    ->group(function () {
+    Route::resource('users', UserController::class);
+    Route::resource('quizzes', QuizController::class);
+    Route::get('quizzes/{quiz}/increase-quiz-attempts',[QuizController::class, 'increaseQuizAttempts']);
+    Route::get('quizzes/{quiz}/close-quiz',[QuizController::class, 'closeQuiz']);
+    //
+    Route::resource('quizzes.questions', QuestionController::class);
+    Route::resource('quizzes.questions.choices', ChoiceController::class);
+    Route::resource('quizzes.online-exams', MemberQuizController::class);
+});

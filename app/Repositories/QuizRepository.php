@@ -1,9 +1,9 @@
 <?php
 namespace App\Repositories;
 use App\Models\Quiz;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 /**
  * Class QuizRepository
@@ -11,14 +11,12 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 class QuizRepository extends BaseRepository
 {
     public $fieldSearchable = [
-        'email',
+        'title',
     ];
-    
     public function getFieldsSearchable()
     {
         return $this->fieldSearchable;
     }
-    
     public function model()
     {
         return Quiz::class;
@@ -30,13 +28,26 @@ class QuizRepository extends BaseRepository
     {
         $quizInputArray = Arr::only(
             $input,
-            ['name', 'email', 'password']
+            [
+                'title',
+                'description',
+                'max_attempts',
+                'test_type',
+                'duration',
+                'validity_duration',
+                'started_at'
+            ]
         );
-        $quizInputArray["password"] =  Hash::make($quizInputArray['password']);
         try {
-            $user =  Quiz::create($quizInputArray);
+            if ($quizInputArray['test_type'] == 'out_of_time') {
+                $quizInputArray = $this->createOutOfTimeQuiz($quizInputArray);
+            } else {
+                $quizInputArray = $this->createInTimeQuiz($quizInputArray);
+            }
+            unset($quizInputArray['validity_duration']);
+            $quiz =  Quiz::create($quizInputArray);
             DB::commit();
-            return $user;
+            return $quiz;
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -45,7 +56,10 @@ class QuizRepository extends BaseRepository
     {
         $quizInputArray = Arr::only(
             $input,
-            ['name']
+            [
+                'title',
+                'description',
+            ]
         );
         try {
             DB::beginTransaction();
@@ -55,5 +69,16 @@ class QuizRepository extends BaseRepository
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
+    }
+    public function   createOutOfTimeQuiz(
+        $quizInputArray
+    ) {
+        $quizInputArray['expired_at'] =  Carbon::createFromFormat('Y-m-d H:i:s', $quizInputArray['started_at'])->addDays($quizInputArray['validity_duration'])->format('Y-m-d H:i:s');
+        return $quizInputArray;
+    }
+    public function   createInTimeQuiz($quizInputArray)
+    {
+        $quizInputArray['expired_at'] =  Carbon::createFromFormat('Y-m-d H:i:s', $quizInputArray['started_at'])->addHours($quizInputArray['duration'])->format('Y-m-d H:i:s');
+        return $quizInputArray;
     }
 }

@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
-
 class StoreChoiceRequest extends FormRequest
 {
     /**
@@ -13,7 +10,6 @@ class StoreChoiceRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +18,9 @@ class StoreChoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'explanation' => 'nullable|string|min:10|max:500',
+            'description' => 'nullable|string|min:10|max:500',
+            'is_correct' => 'boolean',
         ];
     }
 }

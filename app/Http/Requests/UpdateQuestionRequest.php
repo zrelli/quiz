@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
-
 class UpdateQuestionRequest extends FormRequest
 {
     /**
@@ -13,7 +10,6 @@ class UpdateQuestionRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +18,8 @@ class UpdateQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'question' => 'required|string|min:10|max:255|unique:questions',
+            'description' => 'nullable|string|min:10|max:500',
         ];
     }
 }

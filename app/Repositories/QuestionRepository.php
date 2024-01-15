@@ -13,12 +13,10 @@ class QuestionRepository extends BaseRepository
     public $fieldSearchable = [
         'quiz_id',
     ];
-    
     public function getFieldsSearchable()
     {
         return $this->fieldSearchable;
     }
-    
     public function model()
     {
         return Question::class;
@@ -30,10 +28,12 @@ class QuestionRepository extends BaseRepository
     {
         $questionInputArray = Arr::only(
             $input,
-            ['name', 'email', 'password']
+            ['question', 'description']
         );
-        $questionInputArray["password"] =  Hash::make($questionInputArray['password']);
         try {
+            if(!empty([$this->relationQuery])){
+                $questionInputArray = [...$this->relationQuery,...$questionInputArray];
+            }
             $user =  Question::create($questionInputArray);
             DB::commit();
             return $user;
@@ -45,7 +45,7 @@ class QuestionRepository extends BaseRepository
     {
         $questionInputArray = Arr::only(
             $input,
-            ['question']
+            ['question', 'description']
         );
         try {
             DB::beginTransaction();

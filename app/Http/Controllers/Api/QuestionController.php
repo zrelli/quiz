@@ -1,15 +1,15 @@
 <?php
-
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\AppBaseController;
-use App\Http\Requests\StoreUserRequest;
-use App\Models\Question;
+use App\Http\Requests\StoreQuestionRequest;
+use App\Http\Requests\UpdateQuestionRequest;
+use App\Http\Resources\QuestionResource;
 use App\Repositories\QuestionRepository;
+use App\Repositories\QuizRepository;
 use App\Traits\ApiRequestValidationTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
-
 class QuestionController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
@@ -20,7 +20,8 @@ class QuestionController extends AppBaseController
     /**
      * UserController constructor.
      */
-    public function __construct(QuestionRepository $questionRepository)
+    public function __construct(QuestionRepository $questionRepository
+    )
     {
         $this->questionRepo = $questionRepository;
     }
@@ -30,40 +31,46 @@ class QuestionController extends AppBaseController
     public function index($id)
     {
         $this->questionRepo->setPaginationFilter(['quiz_id' => $id]);
-        $question = $this->questionRepo->paginate(10);
-        //todo set message
-        return $this->sendResponse($question, '');
+        $questions = $this->questionRepo->paginate(QUESTIONS_PER_PAGE);
+        $questions = QuestionResource::collection($questions);
+        return $this->sendResponse($questions);
     }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $input = $this->processRequest($request, StoreUserRequest::class);
-        $user =  $this->questionRepo->store($input);
-        return $this->sendResponse($user, '');
+        $input = $this->processRequest($request, StoreQuestionRequest::class);
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $lastParameter ?? throw new ModelNotFoundException();
+        $this->questionRepo->setRelationQuery(['quiz_id' => $lastParameter]);
+        $question =  $this->questionRepo->store($input);
+        $question = new QuestionResource($question);
+        return $this->sendResponse($question);
     }
     /**
      * Display the specified resource.
      */
-    public function show($question)
+    public function show()
     {
-
         $parameters = func_get_args();
         $lastParameter = end($parameters);
         $question =  $this->questionRepo->find($lastParameter);
-        return $this->sendResponse($question, '');
+        $question ?? throw new ModelNotFoundException();
+        $question = new QuestionResource($question);
+        return $this->sendResponse($question);
     }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $question)
+    public function update(Request $request)
     {
-        $input = $request->all();
+        $input = $this->processRequest($request, UpdateQuestionRequest::class);
         $parameters = func_get_args();
         $lastParameter = end($parameters);
         $question =  $this->questionRepo->find($lastParameter);
-
+        $question ?? throw new ModelNotFoundException();
         $this->questionRepo->update($input, $question);
         return $this->sendSuccess('question updated successfully');
     }
@@ -72,10 +79,10 @@ class QuestionController extends AppBaseController
      */
     public function destroy($question)
     {
-
         $parameters = func_get_args();
         $lastParameter = end($parameters);
         $question =  $this->questionRepo->find($lastParameter);
+        $question ?? throw new ModelNotFoundException();
         $this->questionRepo->delete($question);
         return $this->sendSuccess('question deleted successfully');
     }
