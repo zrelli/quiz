@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MemberQuiz extends Model
 {
@@ -16,4 +17,5 @@ class MemberQuiz extends Model
     {
         return $this->belongsTo(Member::class);
     }
+    //   
 }

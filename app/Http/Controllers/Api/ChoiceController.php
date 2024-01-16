@@ -79,9 +79,12 @@ class ChoiceController extends AppBaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Choice $choice)
+    public function destroy()
     {
-        $this->choiceRepo->delete($choice);
-        return $this->sendSuccess('user deleted successfully');
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $choice =  $this->choiceRepo->find($lastParameter);
+        $choice ?? throw new ModelNotFoundException();
+        $this->choiceRepo->delete($choice);        return $this->sendSuccess('choice deleted successfully');
     }
 }

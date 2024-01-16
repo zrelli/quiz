@@ -1,11 +1,13 @@
 <?php
 use App\Enums\RolesEnum;
 use App\Models\Domain;
+use App\Models\Member;
 use Illuminate\Support\Str;
 const USERS_PER_PAGE = 10;
 const QUIZZES_PER_PAGE = 10;
 const QUESTIONS_PER_PAGE = 10;
 const CHOICES_PER_PAGE = 10;
+const MEMBER_QUIZZES_PER_PAGE = 10;
 if (!function_exists('isDashboardSuperadmin')) {
     function isDashboardSuperadmin()
     {
@@ -29,5 +31,36 @@ if (!function_exists('tenantId')) {
     function tenantId()
     {
         return tenant('id');
+    }
+}
+if (!function_exists('isMyClient')) {
+    function isMyClient($memberId)
+    {
+        $member =  Member::where(['id' => $memberId, 'tenant_id' => tenantId()])->first();
+        return $member;
+    }
+}
+if (!function_exists('isAdminApiRoute')) {
+    function isAdminApiRoute()
+    {
+        $route = request()->path();
+        $pattern = '/^api\/v(\d+)\/admin/';
+        return (preg_match($pattern, $route, $matches));
+    }
+}
+if (!function_exists('isMemberApiRoute')) {
+    function isMemberApiRoute()
+    {
+        $route = request()->path();
+        $pattern = '/^api\/v(\d+)\/member/';
+        return (preg_match($pattern, $route, $matches));
+    }
+}
+if (!function_exists('canLogin')) {
+    function canLogin($user)
+    {
+      return  (isAdminApiRoute()   &&  $user->hasRole(RolesEnum::ADMIN))
+            ||
+            (isMemberApiRoute()   &&  $user->hasRole(RolesEnum::MEMBER));
     }
 }

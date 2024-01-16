@@ -1,12 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\AppBaseController;
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\MemberQuizRequest;
+use App\Http\Requests\StoreMemberQuizRequest;
+use App\Http\Resources\MemberQuizResource;
 use App\Models\MemberQuiz;
 use App\Repositories\MemberQuizRepository;
 use App\Traits\ApiRequestValidationTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
+
 class MemberQuizController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
@@ -26,42 +32,55 @@ class MemberQuizController extends AppBaseController
      */
     public function index($id)
     {
-        $this->memberQuizRepo->setPaginationFilter(['quiz_id'=>$id]);
-        $users = $this->memberQuizRepo->paginate(10);
-        //todo set message
-        return $this->sendResponse($users, '');
+        $this->memberQuizRepo->setPaginationFilter(['quiz_id' => $id]);
+        $memberQuizzes = $this->memberQuizRepo->paginate(MEMBER_QUIZZES_PER_PAGE);
+        $memberQuizzes = MemberQuizResource::collection($memberQuizzes);
+        return $this->sendResponse($memberQuizzes);
     }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $input = $this->processRequest($request, StoreUserRequest::class);
-        $user =  $this->memberQuizRepo->store($input);
-        return $this->sendResponse($user, '');
+        $input = $this->processRequest($request, StoreMemberQuizRequest::class);
+        //AssignMemberToQuiz
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $lastParameter ?? throw new ModelNotFoundException();
+        if (!isMyClient($input['member_id'])) {
+            return  $this->sendError('Member is not in your platform');
+        }
+        $isAlreadyAssigned = $this->memberQuizRepo->isAlreadyAssigned($input['member_id'], $lastParameter);
+        if ($isAlreadyAssigned) {
+            return  $this->sendError('Member is already assigned');
+        }
+        $this->memberQuizRepo->setRelationQuery(['quiz_id' => $lastParameter]);
+        $choice =  $this->memberQuizRepo->store($input);
+        $choice = new MemberQuizResource($choice);
+        return $this->sendResponse($choice);
     }
     /**
      * Display the specified resource.
      */
     public function show(MemberQuiz $memberQuiz)
     {
-        return $this->sendResponse($memberQuiz, '');
-    }
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, MemberQuiz $memberQuiz)
-    {
-        $input = $request->all();
-        $this->memberQuizRepo->update($input, $memberQuiz);
-        return $this->sendSuccess('choice updated successfully');
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $memberQuiz =  $this->memberQuizRepo->find($lastParameter);
+        $memberQuiz ?? throw new ModelNotFoundException();
+        $memberQuiz = new MemberQuizResource($memberQuiz);
+        return $this->sendResponse($memberQuiz);
     }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(MemberQuiz $memberQuiz)
     {
+        $parameters = func_get_args();
+        $lastParameter = end($parameters);
+        $memberQuiz =  $this->memberQuizRepo->find($lastParameter);
+        $memberQuiz ?? throw new ModelNotFoundException();
         $this->memberQuizRepo->delete($memberQuiz);
-        return $this->sendSuccess('choice deleted successfully');
+        return $this->sendSuccess('Exam deleted successfully');
     }
 }

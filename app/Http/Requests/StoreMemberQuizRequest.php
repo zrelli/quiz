@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
-
 class StoreMemberQuizRequest extends FormRequest
 {
     /**
@@ -13,7 +10,6 @@ class StoreMemberQuizRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +18,7 @@ class StoreMemberQuizRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'member_id' => 'required|integer',
         ];
     }
 }

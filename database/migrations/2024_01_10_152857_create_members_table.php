@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
 return new class extends Migration
 {
     /**
@@ -14,6 +12,10 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('average_score')->nullable();
+            $table->unsignedInteger('average_spent_time')->nullable(); // has a value for  (in_time quiz) only
+            $table->unsignedInteger('total_attempts')->default(0); // has a value for  (in_time quiz) only
+            $table->unsignedInteger('successful_attempts')->default(0); // has a value for  (in_time quiz) only
+            $table->unsignedInteger('failed_attempts')->default(0); // has a value for  (in_time quiz) only
             $table->string('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')

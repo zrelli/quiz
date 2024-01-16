@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\MemberQuiz;
@@ -7,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+
 /**
  * Class MemberQuizRepository
  */
@@ -15,13 +17,10 @@ class MemberQuizRepository extends BaseRepository
     public $fieldSearchable = [
         'quiz_id'
     ];
-    
-    
     public function getFieldsSearchable()
     {
         return $this->fieldSearchable;
     }
-    
     public function model()
     {
         return MemberQuiz::class;
@@ -33,10 +32,12 @@ class MemberQuizRepository extends BaseRepository
     {
         $memberQuizInputArray = Arr::only(
             $input,
-            ['name', 'email', 'password']
+            ['member_id']
         );
-        $memberQuizInputArray["password"] =  Hash::make($memberQuizInputArray['password']);
         try {
+            if (!empty([$this->relationQuery])) {
+                $memberQuizInputArray = [...$this->relationQuery, ...$memberQuizInputArray];
+            }
             $memberQuiz =  MemberQuiz::create($memberQuizInputArray);
             DB::commit();
             return $memberQuiz;
@@ -44,19 +45,24 @@ class MemberQuizRepository extends BaseRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
-    public function update($input,  $memberQuiz)
+    // public function update($input,  $memberQuiz)
+    // {
+    //     $memberQuizInputArray = Arr::only(
+    //         $input,
+    //         ['name']
+    //     );
+    //     try {
+    //         DB::beginTransaction();
+    //         $memberQuiz->update($memberQuizInputArray);
+    //         DB::commit();
+    //         return $memberQuiz;
+    //     } catch (\Exception $e) {
+    //         throw new UnprocessableEntityHttpException($e->getMessage());
+    //     }
+    // }
+    public function isAlreadyAssigned($memberId, $quizId)
     {
-        $memberQuizInputArray = Arr::only(
-            $input,
-            ['name']
-        );
-        try {
-            DB::beginTransaction();
-            $memberQuiz->update($memberQuizInputArray);
-            DB::commit();
-            return $memberQuiz;
-        } catch (\Exception $e) {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+        $memberQuiz =   MemberQuiz::where(['member_id' => $memberId, 'quiz_id' => $quizId])->first();
+        return $memberQuiz;
     }
 }

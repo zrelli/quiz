@@ -3,6 +3,7 @@ use App\Http\Controllers\Api\ChoiceController;
 use App\Http\Controllers\Api\MemberQuizController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,6 @@ Route::middleware(['isAdmin','auth:sanctum'])    ->group(function () {
     //
     Route::resource('quizzes.questions', QuestionController::class);
     Route::resource('quizzes.questions.choices', ChoiceController::class);
-    Route::resource('quizzes.online-exams', MemberQuizController::class);
+    Route::resource('quizzes.online-exams', MemberQuizController::class)->except('update');
+    Route::get('statistics',[StatisticsController::class,'index']);
 });

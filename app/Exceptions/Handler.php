@@ -4,6 +4,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
 class Handler extends ExceptionHandler
 {
@@ -40,6 +41,18 @@ class Handler extends ExceptionHandler
                     'success' => false
                 ], 401);
             }
+
+            else if ($exception instanceof MethodNotAllowedHttpException) {
+                return response()->json([
+                    'message' => 'Not supported',
+                    'success' => false
+                ], 405);
+            }
+
+
+
+
+            
         }
         return parent::render($request, $exception);
     }
