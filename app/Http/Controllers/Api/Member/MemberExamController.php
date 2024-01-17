@@ -1,16 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\Member;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Requests\StoreQuestionAnswerRequest;
 use App\Http\Resources\MemberQuizResource;
-use App\Models\Choice;
-use App\Models\MemberExamStatistics;
 use App\Models\MemberQuiz;
-use App\Models\Question;
 use App\Repositories\MemberQuizRepository;
 use App\Traits\ApiRequestValidationTrait;
 use Illuminate\Http\ResponseTrait;
-use Illuminate\Http\Request;
 class MemberExamController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
@@ -47,16 +42,7 @@ class MemberExamController extends AppBaseController
      */
     public function startExam(MemberQuiz $online_exam)
     {
-        //create test
-        // $online_exam->startExam();
-        //get all tests
-        // $data= $online_exam->examStatistics();
         $data = $online_exam->startExam();
-        //    foreach ($data as $d){
-        //     // $d->setResultStatus(2,0);
-        //     $d->setResultStatus(2,0);
-        //     $d->calculateFinalStatistics();
-        //    }
         return $this->sendResponse($data);
     }
     // todo add validation and run action into repository

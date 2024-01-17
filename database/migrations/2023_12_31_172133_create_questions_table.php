@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('question');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->boolean('is_choices_randomly_ordered')->default(true);
+            $table->boolean('is_choices_randomly_ordered')->default(false);//shuffling items
             $table->boolean('has_multiple_answers')->default(false); // we will set all false
             $table->timestamps();
         });

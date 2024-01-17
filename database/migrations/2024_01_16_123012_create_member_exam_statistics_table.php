@@ -15,8 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('member_quiz_id');
             $table->string('questions_data'); // Array [0,1,0,1,0,...] correct  or not correct answer
             $table->unsignedTinyInteger('time_taken')->default(0);//  (0 to 180) minutes
-            $table->unsignedInteger('average_score')->default(0);
-//            $table->timestamp('ended_at')->nullable();
+            $table->unsignedTinyInteger('average_score')->default(0);
             $table->boolean('is_closed')->default(false);
             $table->foreign('member_quiz_id')
             ->references('id')

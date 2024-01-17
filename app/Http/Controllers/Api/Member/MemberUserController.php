@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Member;
+
+use App\Exports\MembersExport;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -28,6 +30,8 @@ class MemberUserController extends AppBaseController
      */
     public function index()
     {
+        // (new MembersExport)->store('members-data.csv','local',\Maatwebsite\Excel\Excel::CSV);
+
         $users = $this->userRepo->paginate(USERS_PER_PAGE);
         $users = UserResource::collection($users);
         return $this->sendResponse($users);
