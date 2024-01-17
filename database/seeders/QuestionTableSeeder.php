@@ -1,11 +1,8 @@
 <?php
-
 namespace Database\Seeders;
-
 use App\Models\Question;
 use App\Models\Quiz;
 use Illuminate\Database\Seeder;
-
 class QuestionTableSeeder extends Seeder
 {
     /**
@@ -15,7 +12,7 @@ class QuestionTableSeeder extends Seeder
     {
         $quizzes  = Quiz::all();
         foreach ($quizzes as $quiz) {
-            $totalQuestions = 10;
+            $totalQuestions = 2;
             for ($i = 0; $i < $totalQuestions; $i++) {
                 Question::factory()->forQuiz($quiz->id)->create();
             }

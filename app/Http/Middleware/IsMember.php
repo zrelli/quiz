@@ -13,7 +13,7 @@ class IsMember
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        // return $next($request);
 // 
 if (auth()->user() && auth()->user()->hasRole(RolesEnum::MEMBER)) {
     return $next($request);

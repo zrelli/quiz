@@ -33,6 +33,10 @@ class Quiz extends Model
     {
         return $this->hasMany(Question::class);
     }
+    public function exams(): HasMany
+    {
+        return $this->hasMany(MemberQuiz::class);
+    }
     public function periodOfTime(): HasOne
     {
         return $this->hasOne(QuizPeriodTime::class);
