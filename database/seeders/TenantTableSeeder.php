@@ -15,10 +15,10 @@ class TenantTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $totalAdmins  = User::role(RolesEnum::ADMIN)->count();
-        // Log::info($totalAdmins);
-        for ($i = 0; $i < $totalAdmins; $i++) {
-            Tenant::factory()->setTenantIdFromIndex()->create();
-        }
+        // $totalAdmins  = User::role(RolesEnum::ADMIN)->count();
+        // // Log::info($totalAdmins);
+        // for ($i = 0; $i < $totalAdmins; $i++) {
+        //     Tenant::factory()->setTenantIdFromIndex()->create();
+        // }
     }
 }

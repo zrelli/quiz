@@ -32,9 +32,9 @@ class TenantFactory extends Factory
             $supervisor = User::where('email', $supervisorEmail)->first();
             $supervisor->tenant_id = $tenant->id;
             $supervisor->save();
-            $member = User::where('email', $memberEmail)->first();
-            $member->tenant_id = $tenant->id;
-            $member->save();
+            // $member = User::where('email', $memberEmail)->first();
+            // $member->tenant_id = $tenant->id;
+            // $member->save();
             self::$index++;
         });
     }

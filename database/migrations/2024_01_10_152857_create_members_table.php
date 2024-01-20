@@ -21,19 +21,19 @@ return new class extends Migration
                 ->references('id')
                 ->on('tenants')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade');
+            // $table->unsignedBigInteger('user_id');
+            // $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade');
             //todo:for auth guard
-            $table->unique(['tenant_id', 'user_id']);// commented to avoid keys duplication error (dev)
+            // $table->unique(['tenant_id', 'user_id']);// commented to avoid keys duplication error (dev)
             $table->timestamps();
             //todo for auth member guard
             $table->boolean('is_choices_randomly_ordered')->default(true);
             //todo for standalone auth  guard member
-            // $table->string('name');
-            // $table->string('email')->unique();
-            // $table->timestamp('email_verified_at')->nullable();
-            // $table->string('password');
-            // $table->rememberToken();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
         });
     }
     /**

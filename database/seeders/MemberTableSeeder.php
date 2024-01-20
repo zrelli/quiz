@@ -17,15 +17,15 @@ class MemberTableSeeder extends Seeder
     {
         // \App\Models\Member::factory(10)->create();
         // setUserIdTenantId
-        $members  = User::role(RolesEnum::MEMBER)->get();
-        $totalTenants  = Tenant::count();
-        foreach ($members as $member) {
-            // most ids should be between 1 and 5
-            $randomNumber =
-                fake()->optional(0.9)->numberBetween(1, 3)
-                ?? fake()->numberBetween(4, ($totalTenants - 1));
-            $tenantId = 'tenant' . $randomNumber;
-            Member::factory()->setUserIdTenantId($member->id, $tenantId)->create();
-        }
+        // $members  = User::role(RolesEnum::MEMBER)->get();
+        // $totalTenants  = Tenant::count();
+        // foreach ($members as $member) {
+        //     // most ids should be between 1 and 5
+        //     $randomNumber =
+        //         fake()->optional(0.9)->numberBetween(1, 3)
+        //         ?? fake()->numberBetween(4, ($totalTenants - 1));
+        //     $tenantId = 'tenant' . $randomNumber;
+        //     Member::factory()->setUserIdTenantId($member->id, $tenantId)->create();
+        // }
     }
 }

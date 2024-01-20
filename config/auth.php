@@ -1,7 +1,5 @@
 <?php
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -12,12 +10,10 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
-
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards
@@ -34,18 +30,16 @@ return [
     | Supported: "session"
     |
     */
-
     'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        // 'member' => [
-        //     'driver' => 'session',
-        //     'provider' => 'members',
-        // ],
+        'member' => [
+            'driver' => 'session',
+            'provider' => 'members',
+        ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -62,23 +56,20 @@ return [
     | Supported: "database", "eloquent"
     |
     */
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        // 'members' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\Member::class
-        // ],
-
+        'members' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Member::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords
@@ -97,7 +88,6 @@ return [
     | quickly generating a very large amount of password reset tokens.
     |
     */
-
     'passwords' => [
         'users' => [
             'provider' => 'users',
@@ -105,8 +95,13 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'members' => [
+            'provider' => 'members',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout
@@ -117,7 +112,5 @@ return [
     | confirmation screen. By default, the timeout lasts for three hours.
     |
     */
-
     'password_timeout' => 10800,
-
 ];
