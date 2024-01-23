@@ -11,8 +11,8 @@ return new class extends Migration
     {
         Schema::create('member_quizzes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('average_score')->default(0);
-            $table->unsignedTinyInteger('average_spent_time')->default(0); // has a value for  (in_time quiz) only
+            $table->unsignedTinyInteger('score')->default(0);
+            $table->unsignedInteger('time_taken')->default(0); // has a value for  (in_time quiz) only
             $table->unsignedTinyInteger('total_attempts')->default(0); // has a value for  (in_time quiz) only
             $table->boolean('is_successful')->nullable();// if score >= 70
             $table->unsignedBigInteger('member_id');

@@ -17,8 +17,8 @@ class MemberQuizFactory extends Factory
     public function definition(): array
     {
         return [
-            'average_score' => fake()->numberBetween(1, 100),
-            'average_spent_time' => fake()->optional(0.7)->numberBetween(1, 180), //MINUTES
+            'score' => fake()->numberBetween(1, 100),
+            'time_taken' => fake()->optional(0.7)->numberBetween(1, 180), //MINUTES
             'total_attempts' => fake()->optional(0.7)->numberBetween(1, 50), 
             'is_successful' => fake()->optional(0.5)->boolean, 
             'member_id' => Member::inRandomOrder()->first()->id,

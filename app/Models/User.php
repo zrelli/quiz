@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Log\Logger;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -23,6 +24,10 @@ class User extends Authenticatable implements FilamentUser
     protected static function booted(): void
     {
         static::addGlobalScope(new TenantUserScope);
+        parent::boot();
+        static::saving(function ($user) {
+            $user->password=   Hash::make($user->password);
+        });
     }
     /**
      * The attributes that are mass assignable.

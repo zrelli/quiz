@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 class MemberQuizRepository extends BaseRepository
 {
     public $fieldSearchable = [
-        'quiz_id'
+        'quiz_id','member_id'
     ];
     public function getFieldsSearchable()
     {

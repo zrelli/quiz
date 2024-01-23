@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('choices', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('tenant_id');//todo
             $table->unsignedBigInteger('question_id');
             $table->foreign('question_id')->on('questions')->references('id')->onDelete('cascade');
             $table->boolean('is_correct')->default(false);
-            $table->unsignedInteger('order')->nullable();
+            $table->unsignedTinyInteger('order')->nullable();
             $table->text('description')->nullable();
             $table->text('explanation')->nullable();
             $table->timestamps();

@@ -1,32 +1,17 @@
 <?php
-
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
-use App\Models\Member;
-use App\Models\User;
+use App\Http\Requests\StoreUserRequest;
+use App\Traits\ApiRequestValidationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-
 class AuthController extends Controller
 {
+    use ApiRequestValidationTrait;
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8'
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
+        $input = $this->processRequest($request, StoreUserRequest::class);
+        $user = authModel()::create($input); //user or member model
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'data' => $user,
@@ -36,19 +21,13 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        if (!Auth::guard('member')->attempt($request->only('email', 'password'))) {
+        if (!currentAuthApiGuard()->attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => 'Unauthorized',
                 'success' => false
             ], 401);
         }
-        $user = Member::where('email', $request->email)->firstOrFail();
-        // if (!canLogin($user)) {
-            // return response()->json([
-            //     'message' => 'Unauthorized',
-            //     'success' => false
-            // ], 401);
-      //  }
+        $user = authModel()::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'message' => 'Login success',
@@ -60,7 +39,8 @@ class AuthController extends Controller
     {
         Auth::user()->tokens()->delete();
         return response()->json([
-            'message' => 'logout success'
+            'message' => 'logout success',
+            'success' => true
         ]);
     }
 }

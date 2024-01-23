@@ -4,13 +4,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 class Quiz extends Model
 {
-    use BelongsToTenant,HasFactory;
-    // public $timestamps = ['expired_at','started_at'];
+    use BelongsToTenant, HasFactory;
     protected $fillable = [
         'title',
         'description',
@@ -37,30 +35,18 @@ class Quiz extends Model
     {
         return $this->hasMany(MemberQuiz::class);
     }
-    public function periodOfTime(): HasOne
+    public function isExpired()
     {
-        return $this->hasOne(QuizPeriodTime::class);
-    }
-    public function setStartDateAndDuration($startDate, $durationInHours)
-    {
-        $endDate = Carbon::parse($startDate)->addHours($durationInHours);
-        if ($this->periodOfTime) {
-            $this->periodOfTime->update([
-                'start_time' => $startDate,
-                'end_time' => $endDate,
-            ]);
+        if ($this->test_type == 'out_of_time') {
+            $expiredAt = $this->expired_at;
         } else {
-            $this->periodOfTime()->create([
-                'start_time' => $startDate,
-                'end_time' => $endDate,
-            ]);
-        }}
-        public function  calculateExpirationDate($period=1){
-            if ($this->periodOfTime) {
-                $this->expired_at =  $this->periodOfTime->end_time;
-            } else { 
-                $this->expired_at =  Carbon::parse($this->created_at)->addHours($period*24);
-            }
-            $this->save();
+            $expiredAt = $this->started_at;
         }
+        return Carbon::now()->greaterThan($expiredAt);
+    }
+      public function isAlreadyAssigned($memberId=null)
+      {
+          $memberId = auth()->user() && isMemberApiRoute() ?  auth()->user()->id : $memberId;
+       return   $this->exams()->where('member_id',  $memberId)->exists();
+      }
 }

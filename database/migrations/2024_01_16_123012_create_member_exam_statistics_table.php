@@ -11,11 +11,11 @@ return new class extends Migration
     {
         Schema::create('member_exam_statistics', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('current_question_index')->default(0);//  (0 to 180) minutes
+            $table->unsignedTinyInteger('current_question_index')->default(0);
             $table->unsignedBigInteger('member_quiz_id');
             $table->string('questions_data'); // Array [0,1,0,1,0,...] correct  or not correct answer
-            $table->unsignedTinyInteger('time_taken')->default(0);//  (0 to 180) minutes
-            $table->unsignedTinyInteger('average_score')->default(0);
+            $table->unsignedInteger('time_taken')->default(0);//  (0 to 180) minutes
+            $table->unsignedTinyInteger('score')->default(0);
             $table->boolean('is_closed')->default(false);
             $table->foreign('member_quiz_id')
             ->references('id')

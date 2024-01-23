@@ -1,7 +1,11 @@
 <?php
+
 namespace App\Http\Resources;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Route;
+
 class QuestionResource extends JsonResource
 {
     /**
@@ -18,16 +22,11 @@ class QuestionResource extends JsonResource
             'slug' => $this->slug,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            $this->mergeWhen(Route::is('online-exams.questions.show'), [
+                'choices' => ChoiceResource::collection($this->is_choices_randomly_ordered
+                    ? $this->choices->shuffle()
+                    : $this->choices),
+            ]),
         ];
     }
 }
-// $table->id();
-// // $table->foreignId('tenant_id');// todo we will add global scope to show only current tenant questions
-// $table->unsignedBigInteger('quiz_id');
-// $table->foreign('quiz_id')->on('quizzes')->references('id')->onDelete('cascade');
-// $table->string('question');
-// $table->string('slug')->unique();
-// $table->text('description')->nullable();
-// $table->boolean('is_choices_randomly_ordered')->default(true);
-// $table->boolean('has_multiple_answers')->default(false); // we will set all false
-// $table->timestamps();

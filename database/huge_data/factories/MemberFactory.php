@@ -16,7 +16,7 @@ class MemberFactory extends Factory
     public function definition(): array
     {
         return [
-            'average_score' => fake()->numberBetween(1, 100),
+            'score' => fake()->numberBetween(1, 100),
             'tenant_id' => Tenant::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id,
             'created_at' => now(),

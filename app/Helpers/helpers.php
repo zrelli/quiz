@@ -2,8 +2,11 @@
 use App\Enums\RolesEnum;
 use App\Models\Domain;
 use App\Models\Member;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 const USERS_PER_PAGE = 10;
+const MEMBER_PER_PAGE = 10;
 const QUIZZES_PER_PAGE = 10;
 const QUESTIONS_PER_PAGE = 10;
 const CHOICES_PER_PAGE = 10;
@@ -59,8 +62,22 @@ if (!function_exists('isMemberApiRoute')) {
 if (!function_exists('canLogin')) {
     function canLogin($user)
     {
-      return  (isAdminApiRoute()   &&  $user->hasRole(RolesEnum::ADMIN))
+        return (isAdminApiRoute()   &&  $user->hasRole(RolesEnum::ADMIN))
             ||
             (isMemberApiRoute()   &&  $user->hasRole(RolesEnum::MEMBER));
+    }
+}
+if (!function_exists('currentAuthApiGuard')) {
+    function currentAuthApiGuard()
+    {
+        $authGuard = isAdminApiRoute() ? Auth::guard('web') : Auth::guard('member');
+        return $authGuard;
+    }
+}
+if (!function_exists('authModel')) {
+    function authModel()
+    {
+        $model = isAdminApiRoute() ? User::class : Member::class;
+        return $model;
     }
 }

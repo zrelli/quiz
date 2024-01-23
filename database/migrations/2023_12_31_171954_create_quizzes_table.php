@@ -1,7 +1,9 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
 return new class extends Migration
 {
     /**
@@ -15,13 +17,12 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->unsignedInteger('max_attempts')->default(1);
-            $table->unsignedInteger('duration')->default(1); //Minutes
+            $table->unsignedTinyInteger('max_attempts')->default(1);
+            $table->unsignedTinyInteger('duration')->default(1); //(0 to 180) minutes
             $table->enum('test_type', ['in_time', 'out_of_time'])->default('out_of_time');
             $table->timestamp('expired_at')->default(now());
             $table->timestamp('started_at')->default(now());
-            $table->boolean('is_expired')->default(false); //to delete //deal with it as is_closed
-            $table->boolean('is_published')->default(false); //to delete 
+            $table->boolean('is_published')->default(true); //todo set default false  
             $table->timestamps();
             $table->foreign('tenant_id')
                 ->references('id')

@@ -1,53 +1,81 @@
 <?php
 namespace App\Http\Controllers\Api\Member;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Resources\QuizResource;
-use App\Models\Member;
-use App\Models\Quiz;
-use App\Repositories\QuizRepository;
+use App\Http\Resources\MemberQuizResource;
+use App\Models\Choice;
+use App\Models\MemberQuiz;
+use App\Models\Question;
+use App\Repositories\MemberQuizRepository;
 use App\Traits\ApiRequestValidationTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
-use Stancl\Tenancy\Database\TenantScope;
 class MemberQuizController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
     /**
-     * @var QuizRepository
+     * @var MemberQuizRepository
      */
-    public $quizRepo;
+    public $memberQuizRepo;
     /**
-     * QuizController constructor.
+     * UserController constructor.
      */
-    public function __construct(QuizRepository $quizRepository)
+    public function __construct(MemberQuizRepository $memberQuizRepository)
     {
-        $this->quizRepo = $quizRepository;
+        $this->memberQuizRepo = $memberQuizRepository;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $quizzes = $this->quizRepo->paginate(QUIZZES_PER_PAGE);
-        $quizzes = QuizResource::collection($quizzes);
-        return $this->sendResponse($quizzes);
+        $this->memberQuizRepo->setPaginationFilter(['member_id' => auth()->user()->id]);
+        $exams = $this->memberQuizRepo->paginate(MEMBER_QUIZZES_PER_PAGE);
+        return MemberQuizResource::collection($exams);
     }
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quiz)
+    public function show(MemberQuiz $online_exam)
     {
-        $quiz = new QuizResource($quiz);
-        return $this->sendResponse($quiz);
+        return new MemberQuizResource($online_exam);
     }
-    public function subscribeToQuiz(Quiz $quiz)
+    /**
+     * Display the specified resource.
+     */
+    public function startExam(MemberQuiz $online_exam)
     {
-        //deactivate  global tenant scope to show member record
-        $member = Member::withoutGlobalScope(TenantScope::class)->where('user_id', auth()->user()->id)->first();
-        $isAlreadyAssigned = $this->quizRepo->isAlreadyAssigned($member->id, $quiz->id);
-        if ($isAlreadyAssigned) {
-            return  $this->sendError('You already subscribed');
+        $errors = $online_exam->canTakeExam();
+        if (count($errors)) {
+            return  $this->sendError($errors[0]);
         }
-        $exam = $this->quizRepo->subscribeToQuiz($quiz, $member->id);
-        return $this->sendResponse($exam);
+        $data = $online_exam->startExam();
+        return $this->sendResponse($data);
+    }
+    // todo add validation and run action into repository
+    public function lastTestStatistic(MemberQuiz $online_exam)
+    {
+        $online_exam->lastExamAttempt()->calculateFinalStatistics();
+        $data = $online_exam->examStatistics();
+        return $this->sendResponse($data);
+    }
+    public function answerQuestion(MemberQuiz $online_exam, Question $question, Request $request)
+    {
+        $questionIds = $online_exam->questions->pluck('id')->all(); //questions ordered by creation date
+        $choice = Choice::where('id', '=', $request->choice_id)->first();
+        $choiceIds = $question->choices->pluck('id')->all(); //
+        $examTest = $online_exam->lastExamAttempt();
+        if ($choice && in_array($choice->id, $choiceIds) && $examTest) {
+            $currentQuestionsIndex = $examTest->current_question_index;
+            if (count($questionIds) == $currentQuestionsIndex) {
+                return $this->sendResponse(['exam' => 'completed'], 'You have answered all questions');
+            }
+            if ($questionIds[$currentQuestionsIndex] != $question->id) {
+                return $this->sendError('You have chosen the wrong question');
+            }
+            $examTest->setAnswerStatus($choice->is_correct);
+            return $this->sendResponse(['exam' => 'pending'], 'answer has been successfully submitted');
+        }
+        return  throw new ModelNotFoundException;
     }
 }

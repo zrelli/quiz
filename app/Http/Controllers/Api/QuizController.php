@@ -74,7 +74,7 @@ class QuizController extends AppBaseController
     }
     public function closeQuiz(Quiz $quiz){
         $quiz->expired_at = now();
-        $quiz->is_expired = true;
+        $quiz->is_published = false;
         $quiz->save();
         return $this->sendSuccess('quiz updated successfully');
     }

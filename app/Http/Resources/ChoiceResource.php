@@ -1,7 +1,10 @@
 <?php
+
 namespace App\Http\Resources;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+
 class ChoiceResource extends JsonResource
 {
     /**
@@ -15,9 +18,12 @@ class ChoiceResource extends JsonResource
             'id' => $this->id,
             'description' => $this->description,
             'explanation' => $this->explanation,
-            'is_correct' => $this->is_correct,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'question_id' => $this->question_id,
+            $this->mergeWhen(isAdminApiRoute(), [
+                'is_correct' => $this->is_correct
+            ])
         ];
     }
 }

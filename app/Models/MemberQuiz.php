@@ -2,16 +2,17 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 class MemberQuiz extends Model
 {
     use HasFactory;
     // The 'data' attribute will be automatically cast to/from JSON
-    public function quiz()
+    public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
     }
-    public function member()
+    public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class);
     }
@@ -19,25 +20,46 @@ class MemberQuiz extends Model
     {
         return $this->hasMany(MemberExamStatistics::class);
     }
+    public function lastExamAttempt()
+    {
+        return $this->examStatistics()->latest('created_at')->first();
+    }
     public function startExam()
     {
         // todo => check exam attempts and last test is closed or no
         // we will use a scheduled job to close it after time expired
         // and also check if the exam is closed or not 
+        $this->total_attempts++;
+        $this->save();
         $data =  array_fill(0, $this->quiz->questions()->count(), 0);
         return $this->examStatistics()->create(['questions_data' => $data]);
     }
-    public function completeExam()
+    public function canTakeExam()
     {
+        $errors = [];
+        $quiz = $this->quiz;
+        $lastExamAttempt = $this->lastExamAttempt();
+        $AttemptsCompleted = $this->total_attempts == $quiz->max_attempts;
+        $isExpired = $quiz->isExpired();
+        $lastExamStatisticsCompleted = $lastExamAttempt ? !$lastExamAttempt->is_closed : false;
+        if ($AttemptsCompleted) {
+            $errors[] = 'There is no other attempt';
+        }
+        if ($isExpired) {
+            $errors[] = 'Exam date has been expired';
+        }
+        if ($lastExamStatisticsCompleted) {
+            $errors[] = 'Already has a progress exam test';
+        }
+        return $errors;
     }
-    public function canTakeExamAgain()
+    public function scopeFindByMemberAndQuiz($query, $memberId, $quizId)
     {
+        return $query->where(['member_id' => $memberId, 'quiz_id' => $quizId]);
     }
-    public function reTakeExam()
+
+    public function questions()
     {
+        return $this->quiz->questions();
     }
-    public function calculateResult()
-    {
-    }
-    //   
 }

@@ -71,7 +71,7 @@ class QuizFactory extends Factory
                 'test_type' => 'in_time',
                 // 'is_out_of_time' => false,
                 'tenant_id' => $tenantId,
-                'expired_at' => now(), //fake
+                // 'expired_at' => now(), //fake
             ]
         );
     }
@@ -84,7 +84,7 @@ class QuizFactory extends Factory
         return $this->afterCreating(function (Quiz $quiz) {
             $starTime = now();
             if ($quiz->test_type == 'in_time') {
-                $quiz->setStartDateAndDuration($starTime, self::$duration);
+                // $quiz->setStartDateAndDuration($starTime, self::$duration);
                 $expiredAt = Carbon::parse($starTime)->addHours(self::$duration);
                 $quiz->expired_at = $expiredAt;
                 $quiz->save();

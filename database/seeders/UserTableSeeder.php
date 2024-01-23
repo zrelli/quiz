@@ -47,8 +47,20 @@ class UserTableSeeder extends Seeder
             // User::factory()->forMember()->create();
             $totalTenants  = Tenant::count();                // most ids should be between 1 and 5
             $randomNumber =
-                fake()->optional(0.9)->numberBetween(1, 3)
-                ?? fake()->numberBetween(4, ($totalTenants - 1));
+            // fake()->optional(0.9)->numberBetween(1, 3)
+            fake()->optional(1)->numberBetween(1, 1) // all members depend to tenant1
+            ?? fake()->numberBetween(4, ($totalTenants - 1));
+            $tenantId = 'tenant' . $randomNumber;
+            Member::factory()->forMember($tenantId)->create();
+        }
+
+        for ($i = 0; $i < $totalMembers; $i++) {
+            // User::factory()->forMember()->create();
+            $totalTenants  = Tenant::count();                // most ids should be between 1 and 5
+            $randomNumber =
+            // fake()->optional(0.9)->numberBetween(1, 3)
+            fake()->optional(0)->numberBetween(1, 1) // all members depend to tenant1
+            ?? fake()->numberBetween(4, ($totalTenants - 1));
             $tenantId = 'tenant' . $randomNumber;
             Member::factory()->forMember($tenantId)->create();
         }

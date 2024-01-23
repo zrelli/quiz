@@ -19,6 +19,9 @@ abstract class BaseRepository
     protected $app;
     protected $paginationFilter = [];
     protected $relationQuery = [];
+    protected $relationship = [];
+
+    
     /**
      * 
      * @throws \Exception
@@ -63,6 +66,11 @@ abstract class BaseRepository
     {
         $this->relationQuery = $value;
     }
+
+    public function setRelationship($value)
+    {
+        $this->relationship = $value;
+    }
     /**
      * Paginate records for scaffold.
      *
@@ -95,6 +103,10 @@ abstract class BaseRepository
                     $query->where($key, $value);
                 }
             }
+        }
+
+        if($this->relationship){
+            $query->with($this->relationship);
         }
         if (!is_null($skip)) {
             $query->skip($skip);
