@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Repositories;
+
 use App\Models\Question;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+
 /**
  * Class QuestionRepository
  */
@@ -31,8 +33,8 @@ class QuestionRepository extends BaseRepository
             ['question', 'description']
         );
         try {
-            if(!empty([$this->relationQuery])){
-                $questionInputArray = [...$this->relationQuery,...$questionInputArray];
+            if (!empty([$this->relationQuery])) {
+                $questionInputArray = [...$this->relationQuery, ...$questionInputArray];
             }
             $user =  Question::create($questionInputArray);
             DB::commit();

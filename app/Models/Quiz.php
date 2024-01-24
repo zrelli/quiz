@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Models;
+
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 class Quiz extends Model
 {
     use BelongsToTenant, HasFactory;
@@ -14,12 +17,17 @@ class Quiz extends Model
         'description',
         'max_attempts',
         'duration',
+        'is_published',
         'test_type',
         'started_at',
-        'slug',
         'tenant_id',
         'expired_at',
     ];
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
+
     protected static function boot()
     {
         parent::boot();
@@ -44,9 +52,9 @@ class Quiz extends Model
         }
         return Carbon::now()->greaterThan($expiredAt);
     }
-      public function isAlreadyAssigned($memberId=null)
-      {
-          $memberId = auth()->user() && isMemberApiRoute() ?  auth()->user()->id : $memberId;
-       return   $this->exams()->where('member_id',  $memberId)->exists();
-      }
+    public function isAlreadyAssigned($memberId = null)
+    {
+        $memberId = auth()->user() && isMemberApiRoute() ?  auth()->user()->id : $memberId;
+        return   $this->exams()->where('member_id',  $memberId)->exists();
+    }
 }

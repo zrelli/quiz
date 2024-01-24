@@ -24,10 +24,10 @@ class User extends Authenticatable implements FilamentUser
     protected static function booted(): void
     {
         static::addGlobalScope(new TenantUserScope);
-        parent::boot();
-        static::saving(function ($user) {
-            $user->password=   Hash::make($user->password);
-        });
+        // parent::boot();
+        // static::saving(function ($user) {
+        //     $user->password=   Hash::make($user->password);
+        // });
     }
     /**
      * The attributes that are mass assignable.

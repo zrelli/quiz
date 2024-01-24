@@ -21,6 +21,7 @@ class QuestionResource extends JsonResource
             'description' => $this->description,
             'slug' => $this->slug,
             'created_at' => $this->created_at,
+            'quiz_id' => $this->quiz_id,
             'updated_at' => $this->updated_at,
             $this->mergeWhen(Route::is('online-exams.questions.show'), [
                 'choices' => ChoiceResource::collection($this->is_choices_randomly_ordered

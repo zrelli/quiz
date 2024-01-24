@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Repositories;
+
 use App\Models\Quiz;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+
 /**
  * Class QuizRepository
  */
@@ -34,17 +37,18 @@ class QuizRepository extends BaseRepository
                 'max_attempts',
                 'test_type',
                 'duration',
-                'validity_duration',
+                'is_published',
+                // 'validity_duration',
                 'started_at'
             ]
         );
         try {
             $timeDuration = $quizInputArray['test_type'] == 'out_of_time'
-                ? ($quizInputArray['validity_duration'] * 24)
+                ? ($quizInputArray['duration'] * 24)
                 : $quizInputArray['duration'];
             $quizInputArray['expired_at'] =  Carbon::createFromFormat('Y-m-d H:i:s', $quizInputArray['started_at'])
                 ->addHours($timeDuration)->format('Y-m-d H:i:s');
-            unset($quizInputArray['validity_duration']);
+            // unset($quizInputArray['validity_duration']);
             $quiz =  Quiz::create($quizInputArray);
             DB::commit();
             return $quiz;
@@ -59,6 +63,7 @@ class QuizRepository extends BaseRepository
             [
                 'title',
                 'description',
+                'is_published'
             ]
         );
         try {

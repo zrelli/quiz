@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 class UpdateQuestionRequest extends FormRequest
 {
     /**
@@ -17,8 +18,16 @@ class UpdateQuestionRequest extends FormRequest
      */
     public function rules(): array
     {
+        $questionId = basename(request()->path());
+        $titleRule = [
+            'required',
+            'string',
+            'min:10',
+            'max:255',
+            Rule::unique('questions')->ignore($questionId),
+        ];
         return [
-            'question' => 'required|string|min:10|max:255|unique:questions',
+            'question' => $titleRule,
             'description' => 'nullable|string|min:10|max:500',
         ];
     }

@@ -19,10 +19,10 @@ class Member  extends Authenticatable
     protected static function booted(): void
     {
         // static::addGlobalScope(new TenantUserScope);
-        parent::boot();
-        static::saving(function ($member) {
-            $member->password =   Hash::make($member->password);
-        });
+        // parent::boot();
+        // static::saving(function ($member) {
+        //     $member->password =   Hash::make($member->password);
+        // });
     }
     public function user(): BelongsTo
     {

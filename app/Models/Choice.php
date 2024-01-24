@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Choice extends Model
 {
     use  HasFactory;
+    protected $casts = [
+        'is_correct' => 'boolean',
+    ];
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);

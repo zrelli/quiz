@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Illuminate\Validation\Rule;
 class UpdateQuizRequest extends FormRequest
 {
     /**
@@ -17,14 +20,18 @@ class UpdateQuizRequest extends FormRequest
      */
     public function rules(): array
     {
+        $quizId = basename(request()->path());
+        $titleRule = [
+            'required',
+            'string',
+            'min:10',
+            'max:255',
+            Rule::unique('quizzes')->ignore($quizId),
+        ];
         return [
-            'title' => 'required|string|min:10|max:255|unique:quizzes',
+            'title' => $titleRule,
             'description' => 'nullable|string|min:10|max:500',
-            // 'max_attempts' => 'integer|min:1|max:4',
-            // 'duration' => 'integer|min:1|max:2',
-            // 'test_type' => 'in:in_time,out_of_time',
-            // 'validity_duration' => 'required_if:test_type,out_of_time|integer|min:1|max:20',//for out of time type
-            // 'started_at' => 'required|date',
+            'is_published' => 'boolean'
         ];
     }
 }

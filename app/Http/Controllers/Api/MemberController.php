@@ -9,7 +9,7 @@ use App\Repositories\UserRepository;
 use App\Traits\ApiRequestValidationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
-class UserController extends AppBaseController
+class MemberController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
     /**
@@ -28,9 +28,10 @@ class UserController extends AppBaseController
      */
     public function index()
     {
-        $users = $this->userRepo->paginate(USERS_PER_PAGE);
-        $users = UserResource::collection($users);
-        return $this->sendResponse($users);
+
+
+        $members = $this->userRepo->paginate(USERS_PER_PAGE);
+        return UserResource::collection($members);
     }
     /**
      * Store a newly created resource in storage.
