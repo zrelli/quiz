@@ -39,7 +39,10 @@ class QuizRepository extends BaseRepository
                 'duration',
                 'is_published',
                 // 'validity_duration',
-                'started_at'
+                'started_at',
+
+                //
+                'tenant_id'
             ]
         );
         try {

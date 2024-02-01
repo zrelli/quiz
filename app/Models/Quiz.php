@@ -23,6 +23,7 @@ class Quiz extends Model
         'tenant_id',
         'expired_at',
     ];
+    
     protected $casts = [
         'is_published' => 'boolean',
     ];
@@ -43,6 +44,11 @@ class Quiz extends Model
     {
         return $this->hasMany(MemberQuiz::class);
     }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(ExamInvitation::class);
+    }
     public function isExpired()
     {
         if ($this->test_type == 'out_of_time') {
@@ -57,4 +63,9 @@ class Quiz extends Model
         $memberId = auth()->user() && isMemberApiRoute() ?  auth()->user()->id : $memberId;
         return   $this->exams()->where('member_id',  $memberId)->exists();
     }
+    public function members() {
+        return $this->belongsToMany(Member::class, 'member_quizzes');
+    }
+
+    
 }

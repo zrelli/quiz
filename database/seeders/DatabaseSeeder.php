@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(QuizPeriodTimeTableSeeder::class);//deleted
         $this->call(QuestionTableSeeder::class);
         $this->call(ChoiceTableSeeder::class);
-        // $this->call(MemberQuizTableSeeder::class);
+        $this->call(MemberQuizTableSeeder::class);
         // $this->call(QuizTestTableSeeder::class);
     }
 }

@@ -3,6 +3,7 @@ use App\Enums\RolesEnum;
 use App\Models\Domain;
 use App\Models\Member;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 const USERS_PER_PAGE = 10;
@@ -81,3 +82,33 @@ if (!function_exists('authModel')) {
         return $model;
     }
 }
+
+
+if (!function_exists('isExpired')) {
+    function isExpired(Carbon $expiredAt)
+    {
+        return Carbon::now()->greaterThan($expiredAt);
+    }
+}
+
+if (!function_exists('initTenant')) {
+    function initTenant()
+    {
+        tenancy()->initialize(auth()->user()->tenant_id);
+    }
+}
+
+
+
+
+
+
+// public function isExpired()
+// {
+//     if ($this->test_type == 'out_of_time') {
+//         $expiredAt = $this->expired_at;
+//     } else {
+//         $expiredAt = $this->started_at;
+//     }
+//     return Carbon::now()->greaterThan($expiredAt);
+// }

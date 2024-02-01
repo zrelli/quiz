@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class Member  extends Authenticatable
@@ -27,5 +27,13 @@ class Member  extends Authenticatable
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function exams(): HasMany
+    {
+        return $this->hasMany(MemberQuiz::class);
+    } public function invitations(): HasMany
+    {
+        return $this->hasMany(ExamInvitation::class);
     }
 }

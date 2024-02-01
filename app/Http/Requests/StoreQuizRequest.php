@@ -24,7 +24,7 @@ class StoreQuizRequest extends FormRequest
             'title' => 'required|string|min:10|max:255|unique:quizzes',
             'description' => 'nullable|string|min:10|max:500',
             'max_attempts' => 'integer|min:1|max:4',
-            'duration' => 'integer|min:1|max:2',
+            'duration' => 'integer|min:1|max:7',
             'test_type' => 'in:in_time,out_of_time',
             'started_at' => 'required|date',
             'is_published' => 'boolean'
