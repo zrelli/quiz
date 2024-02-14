@@ -12,15 +12,15 @@ class MemberExamStatistics extends Model
     protected $casts = [
         'questions_data' => 'json',
     ];
-    public function exam():BelongsTo
+    public function exam(): BelongsTo
     {
-        return $this->belongsTo(MemberQuiz::class);
+        return $this->belongsTo(MemberQuiz::class, 'member_quiz_id', "id");
     }
     public function scopeMaxScore($query)
     {
         return $query->orderBy('score', 'desc')->first();
     }
-    public function setAnswerStatus($status):void
+    public function setAnswerStatus($status): void
     {
         if ($this->current_question_index <= (count($this->questions_data) - 1)) {
             $questionsData = $this->questions_data;
@@ -28,9 +28,17 @@ class MemberExamStatistics extends Model
             $this->questions_data = $questionsData;
             $this->current_question_index++;
             $this->save();
+            //
+            if ($this->current_question_index == (count($this->questions_data))) {
+                $this->calculateFinalStatistics();
+            }
         }
     }
-    public function calculateFinalStatistics():void
+    public function isSuccessfulAttempt()
+    {
+        return $this->score >= 70;
+    }
+    public function calculateFinalStatistics(): void
     {
         //calculate score
         $finalResult = $this->questions_data;
@@ -65,8 +73,20 @@ class MemberExamStatistics extends Model
         $isSuccessful ? $currentMember->successful_attempts++ : $currentMember->failed_attempts++;
         $currentMember->save();
     }
-    public function isAnsweredAllQuestions():bool
+    public function isAnsweredAllQuestions(): bool
     {
         return ($this->current_question_index == count($this->questions_data));
+    }
+    public function currentAttemptTimeProgress()
+    {
+        return round(($this->created_at->diffInSeconds(now())) / ($this->exam->quiz->duration * 3600), 4) * 100;
+    }
+    public function leftTime()
+    {
+        $leftTime = ($this->exam->quiz->duration * 3600) -  $this->created_at->diffInSeconds(now());
+        if ($leftTime < 0) {
+            $leftTime = 0;
+        }
+        return $leftTime;
     }
 }

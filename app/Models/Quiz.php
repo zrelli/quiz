@@ -67,5 +67,14 @@ class Quiz extends Model
         return $this->belongsToMany(Member::class, 'member_quizzes');
     }
 
+    public function memberSubscribed($memberId){
+        return $this->exams()->where(['member_id' => $memberId, 'quiz_id' => $this->id])->exists();
+    }
+
+    public function timeProgressStep(){
+
+        return   round((100 / ($this->duration * 3600)), 4);
+      }
+  
     
 }

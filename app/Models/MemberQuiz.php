@@ -1,16 +1,20 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class MemberQuiz extends Model
 {
     use HasFactory;
     // The 'data' attribute will be automatically cast to/from JSON
     public function quiz(): BelongsTo
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Quiz::class, 'quiz_id', 'id');
+        // return $this->belongsTo(Post::class, 'foreign_key', 'owner_key');
     }
     public function member(): BelongsTo
     {
@@ -57,9 +61,43 @@ class MemberQuiz extends Model
     {
         return $query->where(['member_id' => $memberId, 'quiz_id' => $quizId]);
     }
-
     public function questions()
     {
         return $this->quiz->questions();
+    }
+    public function alreadyHasPendingExam()
+    {
+        $lastExamAttempt =  $this->lastExamAttempt();
+        $isPending = false;
+        if ($lastExamAttempt) {
+            $isPending = !$lastExamAttempt->is_closed;
+        }
+
+        // dd($lastExamAttempt);
+        return $isPending;
+        // &&  !$this->lastExamAttempt()->is_closed;
+        // if(!$this->lastExamAttempt||$this->lastExamAttempt->is_closed
+        // ){
+        //     return false;
+        // }
+        // // $now = now();
+        // $startedAt = $this->lastExamAttempt->created_at;
+        // $expiredAt = $startedAt->addHours($this->quiz->duration);
+        // // $data= Carbon::now()->greaterThan($expiredAt);
+        // $data= Carbon::now()->lessThan($expiredAt);
+        // dd($data);
+        // return;
+        // $data = $this->currentExam->lastExamAttempt->where('created_at', '>', $twoHoursLater)->where('is_closed', false);
+        // dd($data);
+    }
+    public function  isNewExamTest()
+    {
+        $lastExamAttempt =  $this->lastExamAttempt();
+        return  !$lastExamAttempt ||  ($lastExamAttempt &&  $lastExamAttempt->is_closed);
+    }
+    public function leftAttempts()
+    {
+
+        return ($this->quiz->max_attempts - $this->examStatistics->count());
     }
 }

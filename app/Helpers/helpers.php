@@ -99,16 +99,40 @@ if (!function_exists('initTenant')) {
 }
 
 
+if (!function_exists('getCurrentTenant')) {
+    function getCurrentTenant()
+    {
+
+
+        $url = url()->current();
+        // dd(url()->current());
+// Define the regex pattern
+$pattern = '/\/\/([^\/]+)\./';
+
+// Perform the regex match
+preg_match($pattern, $url, $matches);
+
+// Extract the desired part
+$tenant = $matches[1];
+
+
+$data = explode('.',$tenant);
+// dd($data);
+
+tenancy()->initialize($data[0]);
+
+
+// Output the result
+// echo $tenant;
+    }
+}
 
 
 
 
-// public function isExpired()
-// {
-//     if ($this->test_type == 'out_of_time') {
-//         $expiredAt = $this->expired_at;
-//     } else {
-//         $expiredAt = $this->started_at;
-//     }
-//     return Carbon::now()->greaterThan($expiredAt);
-// }
+
+// <?php
+
+// $url = 'http://tenant1.quizzes.test/member';
+
+
