@@ -1,3 +1,4 @@
+
 <div>
     <h2 class="text-xl font-bold mb-2">{{ $quiz->title }}</h2>
     <div class="fi-ta-text grid w-full gap-y-1 mb-2">
@@ -39,7 +40,7 @@
         <span>Expiration Date: {{ $quiz->expired_at }}</span>
     </div>
     <!-- Expiration Date -->
-    @if (!$isExamPage)
+    @if (!$isExamPage  && $isResourcePage)
         <form wire:submit="submit">
             <button class="subscribe-btn" type="submit">{{ $submitBtnContent }}</button>
         </form>

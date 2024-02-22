@@ -135,7 +135,7 @@
             document.addEventListener('alpine:init', () => {
                 Alpine.store('loader', {
                     isLoading: false,
-         
+
                     showLoader() {
                         this.isLoading = true;
                     },
@@ -145,6 +145,6 @@
                 })
             })
         </script>
-        
+
     </body>
 </html>

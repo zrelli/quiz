@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Pages\MembereExamInvitation;
 use App\Models\ExamInvitation;
 use App\Models\MemberQuiz;
 use Illuminate\Support\Facades\Route;
@@ -30,26 +31,36 @@ Route::middleware([
     Route::get('/', function () {
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     });
-    Route::get('/members/exam-invitation/{code}/accept', function ($code) {
-        $parts = explode('___', $code);
-        list($token, $id) = $parts;
-        $invitation = ExamInvitation::find($id);
-        if ($token == $invitation->token) {
-            $invitation->is_accepted = true;
-            $invitation->save();
-            $data = ['member_id' => $invitation->member_id, 'quiz_id' => $invitation->quiz_id];
-            $cc = MemberQuiz::create($data);
-            return response()->json($cc);
-        }
-    });
-    Route::get('/members/exam-invitation/{code}/decline', function ($code) {
-        $parts = explode('___', $code);
-        list($token, $id) = $parts;
-        $invitation = ExamInvitation::find($id);
-        $invitation->is_accepted = false;
-        $invitation->save();
-        return response()->json(['sdfd' => 'scc']);
-    });
+    // Route::get('/members/exam-invitation/{code}/accept', function ($code) {
+    //     $parts = explode('___', $code);
+    //     list($token, $id) = $parts;
+    //     $invitation = ExamInvitation::find($id);
+    //     if ($token == $invitation->token) {
+    //         $invitation->is_accepted = true;
+    //         $invitation->save();
+    //         $data = ['member_id' => $invitation->member_id, 'quiz_id' => $invitation->quiz_id];
+    //         $cc = MemberQuiz::create($data);
+    //         return response()->json($cc);
+    //     }
+    // });
+
+    // Route::get('/members/exam-invitation/{code}', function ($code) {
+    //     return view('member-exam-invitation');
+
+    // });
+
+
+    Route::get('/members/exam-invitation/{code}', MembereExamInvitation::class);
+
+
+    // Route::get('/members/exam-invitation/{code}/decline', function ($code) {
+    //     $parts = explode('___', $code);
+    //     list($token, $id) = $parts;
+    //     $invitation = ExamInvitation::find($id);
+    //     $invitation->is_accepted = false;
+    //     $invitation->save();
+    //     return response()->json(['sdfd' => 'scc']);
+    // });
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');

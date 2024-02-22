@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MemberExamReminderMail extends Mailable
+class AdminNewMemberSubscribedToExamMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $name;
@@ -35,7 +35,7 @@ class MemberExamReminderMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Member Exam Reminder Mail',
+            subject: $this->name . ' is beginning an exam',
         );
     }
 
@@ -45,7 +45,7 @@ class MemberExamReminderMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.exams.reminder',
+            markdown: 'mail.exams.start-exam',
             // with:['name' => $this->name]
 
             with:['name' => $this->name,'quizUrl' => $this->quizUrl,'quiz' => $this->quiz]

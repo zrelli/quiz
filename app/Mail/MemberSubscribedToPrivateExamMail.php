@@ -35,7 +35,7 @@ class MemberSubscribedToPrivateExamMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'You have been subscribed to a private exam',
+            subject: 'You have been invited to subscribe to a new quiz exam',
         );
     }
 
@@ -45,9 +45,9 @@ class MemberSubscribedToPrivateExamMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.exams.private-exam-subscription',
+            markdown: 'mail.exams.invitation',
             with:['name' => $this->name,'urlToken' => $this->urlToken,'quiz' => $this->quiz]
-            
+
         );
     }
 

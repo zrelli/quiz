@@ -2,7 +2,6 @@
 
 namespace App\Filament\Member\Pages;
 
-use Filament\Pages\Page;
 use Filament\Pages\SimplePage;
 
 class Register extends SimplePage

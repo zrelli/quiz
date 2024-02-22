@@ -82,21 +82,15 @@ class MemberQuizResource extends Resource
                     ->searchable()
                     ->preload()
                     ->label('Filter by User')
-                    ->indicator('User'),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->url(fn (MemberQuiz $record): string => route('filament.member.resources.member-quizzes.exam-details', $record->quiz->slug)),
-
-            ])
-            ->bulkActions([]);
+                    ->indicator('User')
+            ]);
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListMemberQuizzes::route('/'),
-            'exam-details' => Pages\ExamDetails::route('/{record:slug}/details'),
+            'view' => Pages\ExamDetails::route('/{record:slug}/details'),
 
         ];
     }

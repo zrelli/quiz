@@ -1,5 +1,5 @@
 <x-mail::message>
-# You have an exam soon
+## {{$name . ' has completed an exam'}}
 ## {{$quiz->title}}
 ## {{$quiz->description}}
 <x-mail::button :url="$quizUrl" color="success">

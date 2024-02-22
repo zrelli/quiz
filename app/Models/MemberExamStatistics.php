@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\MemberExamStatisticsObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+
+
+
+// #[ObservedBy([MemberExamStatisticsObserver::class])]
 
 class MemberExamStatistics extends Model
 {
@@ -88,5 +94,10 @@ class MemberExamStatistics extends Model
             $leftTime = 0;
         }
         return $leftTime;
+    }
+
+    public function quiz()
+    {
+        return $this->exam->quiz();
     }
 }

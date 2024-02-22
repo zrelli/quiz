@@ -1,27 +1,31 @@
 <?php
 namespace App\Jobs;
-use App\Mail\MemberExamReminderMail;
+use App\Mail\AdminNewMemberSubscribedToExamMail;
+use App\Mail\MemberSubscribedToPrivateExamMail;
+use App\Models\ExamInvitation;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-class MemberExamReminder implements ShouldQueue
+use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+class NewMemberSubscribedToExamMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     /**
      * Create a new job instance.
      */
-    protected $members;
+    protected $member;
     protected $quiz;
     protected $baseUrl;
     public $tries = 3;
     public $priority = 1;
-    public function __construct($members, $quiz, $baseUrl)
+    public function __construct($member, $quiz, $baseUrl)
     {
-        $this->members = $members;
+        $this->member = $member;
         $this->quiz = $quiz;
         $this->baseUrl = $baseUrl;
     }
@@ -30,8 +34,6 @@ class MemberExamReminder implements ShouldQueue
      */
     public function handle(): void
     {
-        foreach ($this->members as $member) {
-            Mail::to($member->email)->send(new MemberExamReminderMail($member->name, $this->baseUrl, $this->quiz));
-        }
+        Mail::to($this->member->email)->send(new AdminNewMemberSubscribedToExamMail($this->member->name, $this->baseUrl, $this->quiz));
     }
 }

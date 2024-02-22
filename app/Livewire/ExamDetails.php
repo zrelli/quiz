@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Livewire;
-
 use App\Models\Choice;
 use App\Models\MemberQuiz;
 use Filament\Notifications\Notification;
 use Livewire\Component;
-
 class ExamDetails extends Component
 {
     public $quizRepo;
@@ -28,7 +25,7 @@ class ExamDetails extends Component
     public $leftAttempts = 0;
     public $leftTime = 0;
     public $startExamBtnContent = 'Begin Exam';
-    public $resumeExam=false;
+    public $resumeExam = false;
     public function mount()
     {
         $this->initData();
@@ -60,10 +57,8 @@ class ExamDetails extends Component
     }
     public function retryExam()
     {
-
-        redirect()->route('filament.member.resources.member-quizzes.exam-details', $this->quiz->slug);
+        redirect()->route('filament.member.resources.member-quizzes.view', $this->quiz->slug);
         $this->dispatch('reload:exam-results');
-
     }
     private function setExamBtnContent()
     {
@@ -75,14 +70,12 @@ class ExamDetails extends Component
                 $this->startExamBtnContent = "Show Result";
             } else {
                 $this->startExamBtnContent = "Resume Exam";
-                $this->resumeExam=true;
+                $this->resumeExam = true;
             }
         }
     }
     public function render()
     {
-        // $this->dispatch('reload:exam-results');
-
         return view('livewire.exam-details');
     }
     private function canBeginExamValidation()
@@ -108,14 +101,6 @@ class ExamDetails extends Component
     }
     private function initExamData()
     {
-
-        // $this->dispatch('reload:exam-results');
-
-
-
-
-
-
         $this->lastExamAttempt = $this->currentExam->lastExamAttempt();
         $this->passedTimeProgress = $this->lastExamAttempt->currentAttemptTimeProgress();
         $this->leftTime = $this->lastExamAttempt->leftTime();
@@ -153,8 +138,6 @@ class ExamDetails extends Component
         $this->lastExamAttempt = $this->currentExam->lastExamAttempt();
         $this->examFinished = true;
         $this->dispatch('examCompleted');
-        // $this->dispatch('reload:exam-results');
-
     }
     private function setupQuestionFormData($firstReload = false)
     {

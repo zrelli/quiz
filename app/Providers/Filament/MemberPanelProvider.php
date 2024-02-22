@@ -7,7 +7,6 @@ use App\Filament\Member\Pages\Dashboard;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -26,18 +25,15 @@ class MemberPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-
         return $panel
             ->id('member')
             ->path('member')
             ->login()
-            ->profile()
+            // ->profile()
             ->brandName('Quiz Application')
-
             ->registration(Register::class)
             ->authGuard('member')
             ->breadcrumbs(false)
-
             ->colors([
                 'primary' => Color::Amber,
                 'danger' => Color::Rose,
@@ -46,7 +42,6 @@ class MemberPanelProvider extends PanelProvider
                 'primary' => Color::Indigo,
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
-
             ])
             ->viteTheme('resources/css/filament/member/theme.css')
             ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
@@ -75,7 +70,6 @@ class MemberPanelProvider extends PanelProvider
                 Authenticate::class,
                 InitializeTenancyByDomain::class,
                 PreventAccessFromCentralDomains::class,
-
             ]);
     }
 }

@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Livewire\Components;
-
 use App\Repositories\QuizRepository;
 use Filament\Notifications\Notification;
 use Livewire\Component;
-
 class QuizDetailsCard extends Component
 {
     public $quizRepo;
@@ -13,9 +10,12 @@ class QuizDetailsCard extends Component
     public $submitBtnContent;
     public $isExamPage = false;
     public $memberSubscribed  = false;
+    public $isResourcePage;
+    // public $invitation;
     public function  mount()
     {
-        $this->memberSubscribed = $this->quiz->memberSubscribed(auth()->user()->id);
+        // dd($this->invitationCode);
+        $this->memberSubscribed = auth()->user() ? $this->quiz->memberSubscribed(auth()->user()->id) : [];
         $this->submitBtnContent = $this->memberSubscribed ? 'Show Exam' : 'Subscribe';
         // if ($this->isExamPage) {
         //     $this->submitBtnContent = 'Begin Exam';
@@ -30,7 +30,7 @@ class QuizDetailsCard extends Component
         if (!$this->memberSubscribed) {
             $this->subscribeToExam();
         }
-        redirect(route('filament.member.resources.member-quizzes.exam-details', $this->quiz->slug));
+        redirect(route('filament.member.resources.member-quizzes.view', $this->quiz->slug));
     }
     private function subscribeToExam()
     {

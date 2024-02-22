@@ -1,7 +1,17 @@
 <div>
     <div class=" p-2 rounded-lg shadow-md" x-data="timeProgress" x-init="initData">
         @if (!$examHasStarted)
-            <div></div>
+            @if ($lastExamAttempt && ($quiz->is_answers_visible || $quiz->test_type == 'in_time') )
+                <div>
+                    @if (  $lastExamAttempt->isSuccessfulAttempt())
+                        <h1 class="text-4xl font-bold text-green-500 mb-4">Congratulations!</h1>
+                    @else
+                        <h1 class="text-4xl font-bold text-red-500 mb-4">Failed!</h1>
+                    @endif
+                    <p class="text-white bg-green-600 p-4 text-xl">You have achieved a score of <span
+                            class="font-bold text-4xl pl-4">{{ $lastExamAttempt->score ?? 0 }}%</span>.</p>
+                </div>
+            @endif
             <hr class="separator">
             @if ($attemptExpired || $quiz->isExpired())
                 <div class="bg-red-600 p-4">Exam attempt has been expired.</div>
@@ -20,16 +30,18 @@
                     <button class="subscribe-btn" type="submit">{{ $startExamBtnContent }}</button>
                 </form>
             @endif
-            <hr class="separator">
-            @livewire('components.exam-results', ['exam' => $currentExam])
-            <div class="-mb-5 text-lg underline">Exam correct answers</div>
-
-            @foreach ($quiz->questions as $question)
-                @livewire('components.exam-question-card', ['question' => $question])
-            @endforeach
+            @if ($lastExamAttempt && ($quiz->is_answers_visible || $quiz->test_type == 'in_time') )
+                <hr class="separator">
+                @livewire('components.exam-results', ['exam' => $currentExam])
+                <div class="-mb-5 text-lg underline">Exam correct answers</div>
+                @foreach ($quiz->questions as $question)
+                    @livewire('components.exam-question-card', ['question' => $question])
+                @endforeach
+            @endif
         @else
             <div class=" mx-2   rounded-md shadow-md">
                 <div x-show="showResult" class="bg-gray-600 h-screen flex items-center justify-center">
+                    @if ($quiz->test_type=='in_time')
                     <div class="bg-yellow-500 p-8 rounded shadow-md max-w-lg">
                         @if ($lastExamAttempt && $lastExamAttempt->isSuccessfulAttempt())
                             <h1 class="text-4xl font-bold text-green-500 mb-4">Congratulations!</h1>
@@ -38,7 +50,7 @@
                         @endif
                         <p class="text-gray-700 mb-6">You have achieved a score of <span
                                 class="font-bold text-2xl text-blue-500">{{ $lastExamAttempt->score ?? 0 }}%</span>.</p>
-                        @livewire('components.exam-results', ['exam' => $currentExam])
+                        {{-- @livewire('components.exam-results', ['exam' => $currentExam]) --}}
                         <div class="flex justify-center gap-3">
                             <button wire:click="retryExam"
                                 class= "w-full max-w-md bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
@@ -46,6 +58,21 @@
                             </button>
                         </div>
                     </div>
+                    @else
+
+                    <div class="bg-yellow-500 p-8 rounded shadow-md max-w-lg">
+
+                        <p class="text-gray-700 mb-6">We will send the result to You soon.</p>
+                        <div class="flex justify-center gap-3">
+                            <button wire:click="retryExam"
+                                class= "w-full max-w-md bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                Return
+                            </button>
+                        </div>
+                    </div>
+
+                    @endif
+
                 </div>
                 <div x-show="!showResult">
                     <div class="mb-2 flex justify-between items-center">

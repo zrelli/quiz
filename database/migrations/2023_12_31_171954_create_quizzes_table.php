@@ -22,8 +22,9 @@ return new class extends Migration
             $table->enum('test_type', ['in_time', 'out_of_time'])->default('out_of_time');
             $table->timestamp('expired_at')->default(now());
             $table->timestamp('started_at')->default(now());
-            $table->boolean('is_published')->default(false); 
-            $table->boolean('is_public')->default(true); 
+            $table->boolean('is_published')->default(false);
+            $table->boolean('is_answers_visible')->default(false);
+            $table->boolean('is_public')->default(true);
             $table->timestamps();
             $table->foreign('tenant_id')
                 ->references('id')

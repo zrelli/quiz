@@ -27,8 +27,7 @@ class QuizDetails extends Page
     public function mount(int | string $record): void
     {
 
-        $slug = $record;
-        $quiz = Quiz::where('slug', $slug)->first();
+        $quiz = Quiz::where('slug', $record)->first();
         $this->record = $this->resolveRecord($quiz->id);
     }
 }

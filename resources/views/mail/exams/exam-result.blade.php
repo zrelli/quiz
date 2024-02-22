@@ -1,9 +1,9 @@
 <x-mail::message>
-# You have an exam soon
+# Your exam result has been calculated
 ## {{$quiz->title}}
 ## {{$quiz->description}}
 <x-mail::button :url="$quizUrl" color="success">
-Show Quiz
+Show Exam Result
 </x-mail::button>
 Thanks,<br>
 {{ config('app.name') }}

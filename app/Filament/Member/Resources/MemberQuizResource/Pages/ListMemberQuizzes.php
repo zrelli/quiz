@@ -2,8 +2,6 @@
 namespace App\Filament\Member\Resources\MemberQuizResource\Pages;
 use App\Filament\Member\Resources\MemberQuizResource;
 use App\Models\MemberQuiz;
-use App\Models\Quiz;
-use Filament\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;

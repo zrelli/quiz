@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,13 +11,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class MemberQuiz extends Model
 {
     use HasFactory;
+    protected $appends = ['slug'];
+
     // The 'data' attribute will be automatically cast to/from JSON
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class, 'quiz_id', 'id');
         // return $this->belongsTo(Post::class, 'foreign_key', 'owner_key');
     }
-    public function member(): BelongsTo
+
+    public function getSlugAttribute()
+    {
+        return $this->quiz->slug;
+    }    public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class);
     }
@@ -32,7 +39,7 @@ class MemberQuiz extends Model
     {
         // todo => check exam attempts and last test is closed or no
         // we will use a scheduled job to close it after time expired
-        // and also check if the exam is closed or not 
+        // and also check if the exam is closed or not
         $this->total_attempts++;
         $this->save();
         $data =  array_fill(0, $this->quiz->questions()->count(), 0);

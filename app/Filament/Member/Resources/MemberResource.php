@@ -51,13 +51,9 @@ class MemberResource extends Resource
                 Tables\Columns\TextColumn::make('total_attempts'),
                 Tables\Columns\TextColumn::make('score')->placeholder(0)->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->sortable()->since()->label('Registered since'),
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([])
-            ->bulkActions([]);
+
+            ]);
+
     }
     public static function getRelations(): array
     {
@@ -73,8 +69,4 @@ class MemberResource extends Resource
             'view' => Pages\ViewMember::route('/{record}/view'),
         ];
     }
-    // public static function canAccess(): bool
-    // {
-    //     return isDashboardAdmin();
-    // }
 }

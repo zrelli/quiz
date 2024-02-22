@@ -3,7 +3,6 @@
 namespace App\Filament\Member\Resources;
 
 use App\Filament\Member\Resources\QuizResource\Pages;
-use App\Filament\Member\Resources\QuizResource\RelationManagers\ExamsRelationManager;
 use App\Models\Quiz;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -43,14 +42,8 @@ class QuizResource extends Resource
                 Tables\Columns\TextColumn::make('expired_at')->since()->label('Expiration')->sortable(),
                 Tables\Columns\TextColumn::make('questions_count')->counts('questions')->label('Questions'),
                 Tables\Columns\TextColumn::make('exams_count')->counts('exams')->label('Exams'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
+            ]);
 
-            ])
-            ->bulkActions([]);
     }
     public static function getRelations(): array
     {
