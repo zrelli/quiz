@@ -1,4 +1,3 @@
-
 <div>
     <h2 class="text-xl font-bold mb-2">{{ $quiz->title }}</h2>
     <div class="fi-ta-text grid w-full gap-y-1 mb-2">
@@ -19,9 +18,7 @@
             </div>
         </div>
     </div>
-    <!-- Description -->
     <p class=" mb-4">{{ $quiz->description }}</p>
-    <!-- Expiration Date -->
     <div class="flex items-center text-gray-100 mb-2">
         <svg class="h-4 w-4  bbb" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd"
@@ -30,7 +27,6 @@
         </svg>
         <span>Start Date: {{ $quiz->started_at }}</span>
     </div>
-    <!-- Expiration Date -->
     <div class="flex items-center text-gray-100">
         <svg class="h-4 w-4 bbb" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd"
@@ -39,8 +35,7 @@
         </svg>
         <span>Expiration Date: {{ $quiz->expired_at }}</span>
     </div>
-    <!-- Expiration Date -->
-    @if (!$isExamPage  && $isResourcePage)
+    @if ($canShowFooterBtn)
         <form wire:submit="submit">
             <button class="subscribe-btn" type="submit">{{ $submitBtnContent }}</button>
         </form>

@@ -23,7 +23,7 @@ class Quiz extends Model
         'tenant_id',
         'expired_at',
     ];
-    
+
     protected $casts = [
         'is_published' => 'boolean',
     ];
@@ -63,18 +63,75 @@ class Quiz extends Model
         $memberId = auth()->user() && isMemberApiRoute() ?  auth()->user()->id : $memberId;
         return   $this->exams()->where('member_id',  $memberId)->exists();
     }
-    public function members() {
+    public function members()
+    {
         return $this->belongsToMany(Member::class, 'member_quizzes');
     }
 
-    public function memberSubscribed($memberId){
+    public function memberSubscribed($memberId)
+    {
         return $this->exams()->where(['member_id' => $memberId, 'quiz_id' => $this->id])->exists();
     }
 
-    public function timeProgressStep(){
+    public function timeProgressStep()
+    {
 
         return   round((100 / ($this->duration * 3600)), 4);
-      }
-  
-    
+    }
+
+
+    public function timeLeftToStart()
+    {
+
+
+        $currentDateTime = Carbon::now();
+
+        if($currentDateTime->greaterThan(Carbon::parse($this->started_at))){
+            return '';
+        }
+
+        $timeLeftInMinutes = Carbon::parse($this->started_at)->clone()->diffInMinutes($currentDateTime);
+
+        $hoursLeft = floor($timeLeftInMinutes / 60);
+        $minutesLeft = $timeLeftInMinutes % 60;
+
+        $timeLeft = '';
+        if ($hoursLeft > 0) {
+            $timeLeft .= "$hoursLeft " . ($hoursLeft == 1 ? 'hour' : 'hours');
+            if ($minutesLeft > 0) {
+                $timeLeft .= " and ";
+            }
+        }
+        if ($minutesLeft > 0) {
+            $timeLeft .= "$minutesLeft " . ($minutesLeft == 1 ? 'minute' : 'minutes');
+        }
+
+
+        return $timeLeft;
+        // return   round((100 / ($this->duration * 3600)), 4);
+    }
+
+    public function timeLeftToStartProgress(){
+// Assuming $exam->started_at is the start date and time of the exam
+$examStartTime = Carbon::parse($this->started_at);
+$createdAt = Carbon::parse($this->created_at);
+
+// Get the current date and time
+$currentDateTime = Carbon::now();
+
+// Calculate the total time until the exam starts
+$totalTime = $examStartTime->diffInSeconds($createdAt);
+
+// Calculate the time elapsed as a percentage of the total time
+$elapsedTime = $currentDateTime->diffInSeconds($createdAt);
+$progressPercentage = ($elapsedTime / $totalTime) * 100;
+
+// Format the progress percentage to two decimal places
+$progressPercentage = number_format($progressPercentage, 2);
+
+// dd($progressPercentage);
+return $progressPercentage;
+
+
+    }
 }

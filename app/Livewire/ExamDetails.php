@@ -26,11 +26,15 @@ class ExamDetails extends Component
     public $leftTime = 0;
     public $startExamBtnContent = 'Begin Exam';
     public $resumeExam = false;
+    public $timeLeftToStart;
+    public $timeLeftToStartProgress;
     public function mount()
     {
         $this->initData();
         $this->setExamBtnContent();
         $this->setupQuestionFormData(true);
+        $this->timeLeftToStart = $this->quiz->timeLeftToStart();
+        $this->timeLeftToStartProgress = $this->quiz->timeLeftToStartProgress();
     }
     private function initData()
     {
@@ -76,7 +80,9 @@ class ExamDetails extends Component
     }
     public function render()
     {
-        return view('livewire.exam-details');
+        $this->timeLeftToStart = $this->quiz->timeLeftToStart();
+        $this->timeLeftToStartProgress = $this->quiz->timeLeftToStartProgress();
+        return view('livewire.exam-details')->with(['timeLeftToStartProgress' => $this->timeLeftToStartProgress, 'timeLeftToStart' => $this->timeLeftToStart]);
     }
     private function canBeginExamValidation()
     {

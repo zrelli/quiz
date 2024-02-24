@@ -1,9 +1,30 @@
-<div>
+<div  wire:poll.60s>
     <div class=" p-2 rounded-lg shadow-md" x-data="timeProgress" x-init="initData">
+        @if ($timeLeftToStart)
+            <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                    <div>
+                        {{-- <span class="text-xs font-semibold inline-block p-2  uppercase rounded-full text-primary-600 bg-primary-200">
+                  Exam start after {{$quiz->timeLeftToStart()}}
+                </span> --}}
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-semibold inline-block text-primary-600">
+                            Exam start after {{ $timeLeftToStart }}
+                        </span>
+                    </div>
+                </div>
+                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-primary-200">
+                    <div style="width: {{$timeLeftToStartProgress}}%;"
+                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-500">
+                    </div>
+                </div>
+            </div>
+        @endif
         @if (!$examHasStarted)
-            @if ($lastExamAttempt && ($quiz->is_answers_visible || $quiz->test_type == 'in_time') )
+            @if ($lastExamAttempt && ($quiz->is_answers_visible || $quiz->test_type == 'in_time'))
                 <div>
-                    @if (  $lastExamAttempt->isSuccessfulAttempt())
+                    @if ($lastExamAttempt->isSuccessfulAttempt())
                         <h1 class="text-4xl font-bold text-green-500 mb-4">Congratulations!</h1>
                     @else
                         <h1 class="text-4xl font-bold text-red-500 mb-4">Failed!</h1>
@@ -24,13 +45,15 @@
             @endif
             <hr class="separator">
             @livewire('components.quiz-details-card', ['quiz' => $quiz, 'isExamPage' => true])
-            @if ((!$quiz->isExpired() && $leftAttempts > 0) || $resumeExam)
+            @if (((!$quiz->isExpired() && $leftAttempts > 0) || $resumeExam )&& !$timeLeftToStart)
                 <hr class="separator">
+
                 <form wire:submit="beginExam">
-                    <button class="subscribe-btn" type="submit">{{ $startExamBtnContent }}</button>
+
+                    <button  class="subscribe-btn" type="submit">{{ $startExamBtnContent }}</button>
                 </form>
             @endif
-            @if ($lastExamAttempt && ($quiz->is_answers_visible || $quiz->test_type == 'in_time') )
+            @if ($lastExamAttempt && ($quiz->is_answers_visible || $quiz->test_type == 'in_time'))
                 <hr class="separator">
                 @livewire('components.exam-results', ['exam' => $currentExam])
                 <div class="-mb-5 text-lg underline">Exam correct answers</div>
@@ -41,38 +64,35 @@
         @else
             <div class=" mx-2   rounded-md shadow-md">
                 <div x-show="showResult" class="bg-gray-600 h-screen flex items-center justify-center">
-                    @if ($quiz->test_type=='in_time')
-                    <div class="bg-yellow-500 p-8 rounded shadow-md max-w-lg">
-                        @if ($lastExamAttempt && $lastExamAttempt->isSuccessfulAttempt())
-                            <h1 class="text-4xl font-bold text-green-500 mb-4">Congratulations!</h1>
-                        @else
-                            <h1 class="text-4xl font-bold text-red-500 mb-4">Failed!</h1>
-                        @endif
-                        <p class="text-gray-700 mb-6">You have achieved a score of <span
-                                class="font-bold text-2xl text-blue-500">{{ $lastExamAttempt->score ?? 0 }}%</span>.</p>
-                        {{-- @livewire('components.exam-results', ['exam' => $currentExam]) --}}
-                        <div class="flex justify-center gap-3">
-                            <button wire:click="retryExam"
-                                class= "w-full max-w-md bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                Show exam details
-                            </button>
+                    @if ($quiz->test_type == 'in_time')
+                        <div class="bg-yellow-500 p-8 rounded shadow-md max-w-lg">
+                            @if ($lastExamAttempt && $lastExamAttempt->isSuccessfulAttempt())
+                                <h1 class="text-4xl font-bold text-green-500 mb-4">Congratulations!</h1>
+                            @else
+                                <h1 class="text-4xl font-bold text-red-500 mb-4">Failed!</h1>
+                            @endif
+                            <p class="text-gray-700 mb-6">You have achieved a score of <span
+                                    class="font-bold text-2xl text-blue-500">{{ $lastExamAttempt->score ?? 0 }}%</span>.
+                            </p>
+                            {{-- @livewire('components.exam-results', ['exam' => $currentExam]) --}}
+                            <div class="flex justify-center gap-3">
+                                <button wire:click="retryExam"
+                                    class= "w-full max-w-md bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                    Show exam details
+                                </button>
+                            </div>
                         </div>
-                    </div>
                     @else
-
-                    <div class="bg-yellow-500 p-8 rounded shadow-md max-w-lg">
-
-                        <p class="text-gray-700 mb-6">We will send the result to You soon.</p>
-                        <div class="flex justify-center gap-3">
-                            <button wire:click="retryExam"
-                                class= "w-full max-w-md bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                Return
-                            </button>
+                        <div class="bg-yellow-500 p-8 rounded shadow-md max-w-lg">
+                            <p class="text-gray-700 mb-6">We will send the result to You soon.</p>
+                            <div class="flex justify-center gap-3">
+                                <button wire:click="retryExam"
+                                    class= "w-full max-w-md bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                    Return
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
                     @endif
-
                 </div>
                 <div x-show="!showResult">
                     <div class="mb-2 flex justify-between items-center">
