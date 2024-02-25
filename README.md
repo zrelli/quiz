@@ -1,5 +1,16 @@
 Assignment Blueprint for backend
 ===============================
+#TODO:
+## Fix Api bugs
+## Add nextjs front end app for tenants and their members using turbo (Monorepository)
+## Add Documentation and how to use application
+## Add dynamic pdf certification for winners (like udemy)
+===============================
+===============================
+Deprecated features
+===============================
+
+
 
 This is a Laravel blueprint for backend development, for creating a multi-tenant application **(single database)** to manage quizzes
 
