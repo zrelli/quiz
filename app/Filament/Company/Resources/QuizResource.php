@@ -8,6 +8,7 @@ use App\Filament\Company\Resources\QuizResource\RelationManagers\ExamsRelationMa
 use App\Models\Quiz;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -55,10 +56,12 @@ class QuizResource extends Resource
                         ])
                         ->default('out_of_time')
                         ->live()
-                        ->disabledOn('edit'),
+                        ->required(),
+                        // ->disabledOn('edit'),
                     Forms\Components\DateTimePicker::make('started_at')
                         ->required($isCreatePage)
-                        ->disabledOn('edit')
+                        // ->disabledOn('edit')
+                        ->default(now())
                         ->minDate($isCreatePage ?? now()),
                     Forms\Components\Select::make('max_attempts')
                         ->rules(['integer', 'min:1', 'max:4'])
@@ -68,10 +71,15 @@ class QuizResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('duration')
                             ->rules(['integer', 'min:1', 'max:7'])
-                            ->disabledOn('edit')
+                            // ->disabledOn('edit')
                             ->options($durations)
+                            ->label(fn (Get $get): string =>  $get('test_type') == 'in_time' ?'Exam Duration (Hour)' : 'Expiration duration (Day)')
+
                             ->default('1'),
                         Forms\Components\Toggle::make('is_published')
+                        ->hiddenOn('create')
+                        // ->visibleOn('view')
+
                             ->default(false),
                         Forms\Components\Toggle::make('is_public')
                             ->default(true),

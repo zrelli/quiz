@@ -50,7 +50,7 @@ Route::middleware([
     // });
 
 
-    Route::get('/members/exam-invitation/{code}', MembereExamInvitation::class);
+    Route::get('/members/exam-invitation/{code}', MembereExamInvitation::class)->name('members.exam-invitation');
 
 
     // Route::get('/members/exam-invitation/{code}/decline', function ($code) {

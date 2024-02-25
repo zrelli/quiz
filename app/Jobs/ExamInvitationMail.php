@@ -36,8 +36,6 @@ class ExamInvitationMail implements ShouldQueue
      */
     public function handle(): void
     {
-
-
         foreach ($this->members as $member) {
             $this->sendMail($member);
         }
@@ -51,8 +49,9 @@ class ExamInvitationMail implements ShouldQueue
             ];
             $invitation = ExamInvitation::firstOrCreate($memberQuizData, ['token' => Str::random(60)]);
             if ($invitation->wasRecentlyCreated) {
-                $urlToken = 'http://' . $this->baseUrl . '/members/exam-invitation/' . $invitation->token . '___' . $invitation->id;
-                Mail::to($member->email)->send(new MemberSubscribedToPrivateExamMail($member->name, $urlToken, $this->quiz));
+                $code = $invitation->token . '___' . $invitation->id;
+                $newUrl = str_replace("code_placeholder", $code, $this->baseUrl);
+                Mail::to($member->email)->send(new MemberSubscribedToPrivateExamMail($member->name, $newUrl, $this->quiz));
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());

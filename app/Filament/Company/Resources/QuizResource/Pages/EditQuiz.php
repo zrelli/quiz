@@ -39,12 +39,10 @@ class EditQuiz extends EditRecord
         initTenant();
         $slug = $this->record->slug;
         $quizUrl = route('filament.member.resources.member-quizzes.view', $slug);
-
-
-
-
+        $examInvitationUrl = route('members.exam-invitation', 'code_placeholder');
         return [
             Action::make('Remind members')
+                ->hidden($this->record->exams_count == 0 || $this->record->isExpired())
                 ->form([
                     Section::make('')->schema([
                         Select::make('membersIds')
@@ -65,7 +63,8 @@ class EditQuiz extends EditRecord
             Action::make('Remind all members')
                 ->action(function () use ($quizUrl) {
                     dispatch(new SendMemberExamReminderMailsEvent(null, $this->record, $quizUrl));
-                })->icon('heroicon-m-envelope')->outlined(),
+                })->icon('heroicon-m-envelope')->outlined()
+                ->hidden($this->record->exams_count == 0 || $this->record->isExpired()),
             Action::make('Invite members')
                 ->form([
                     Section::make('')->schema([
@@ -81,22 +80,24 @@ class EditQuiz extends EditRecord
                             ->required(),
                     ])->columns(1),
                 ])->outlined()->icon('heroicon-m-user-plus')
-                ->action(function (array $data) use ($quizUrl) {
-                    dispatch(new SendExamInvitationMailsEvent($data['membersIds'], $this->record, $quizUrl));
-                }),
+                ->action(function (array $data) use ($examInvitationUrl) {
+                    dispatch(new SendExamInvitationMailsEvent($data['membersIds'], $this->record, $examInvitationUrl));
+                })
 
-
+                ->hidden($this->record->isExpired()),
             Action::make('Invite all members')
-                ->action(function () use ($quizUrl) {
-                    dispatch(new SendExamInvitationMailsEvent(null, $this->record, $quizUrl));
-                })->icon('heroicon-m-user-plus')->outlined(),
-
+                ->action(function () use ($examInvitationUrl) {
+                    dispatch(new SendExamInvitationMailsEvent(null, $this->record, $examInvitationUrl));
+                })->icon('heroicon-m-user-plus')->outlined()
+                ->hidden($this->record->isExpired()),
             Action::make('Send Results')
+                ->color('success')
                 ->action(function () use ($quizUrl) {
-                    $this->record->is_answers_visible=true;
+                    $this->record->is_answers_visible = true;
                     $this->record->save();
                     dispatch(new SendExamResultMailEvent(null, $this->record, $quizUrl));
-                })->icon('heroicon-m-megaphone')->outlined(),
+                })->icon('heroicon-m-megaphone')->outlined()
+                ->visible($this->record->exams_count > 0 && $this->record->isExpired()),
             ...parent::getFormActions(),
         ];
     }

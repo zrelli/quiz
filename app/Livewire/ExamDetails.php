@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Livewire;
+
 use App\Models\Choice;
 use App\Models\MemberQuiz;
 use Filament\Notifications\Notification;
 use Livewire\Component;
+
 class ExamDetails extends Component
 {
     public $quizRepo;
@@ -42,8 +45,8 @@ class ExamDetails extends Component
         $this->totalQuestions = count($this->questions);
         $this->step = $this->quiz->timeProgressStep();
         $this->currentExam = MemberQuiz::where(['member_id' => auth()->user()->id, 'quiz_id' => $this->quiz->id])->first();
-        $this->leftAttempts = $this->currentExam->leftAttempts();
-        $this->lastExamAttempt = $this->currentExam->lastExamAttempt();
+        $this->leftAttempts = $this->currentExam?->leftAttempts();
+        $this->lastExamAttempt = $this->currentExam?->lastExamAttempt();
         $this->leftTime = $this->lastExamAttempt?->leftTime() ?? 0;
         $this->passedTimeProgress = $this->lastExamAttempt?->currentAttemptTimeProgress() ?? 0;
         $this->validateExamStatus();
@@ -69,7 +72,7 @@ class ExamDetails extends Component
         if ($this->lastExamAttempt && $this->lastExamAttempt->is_closed) {
             $this->startExamBtnContent = "Retry Exam";
         }
-        if ($this->currentExam->alreadyHasPendingExam()) {
+        if ($this->currentExam?->alreadyHasPendingExam()) {
             if ($this->attemptExpired) {
                 $this->startExamBtnContent = "Show Result";
             } else {

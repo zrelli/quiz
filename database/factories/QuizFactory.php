@@ -1,9 +1,12 @@
 <?php
+
 namespace Database\Factories;
+
 use App\Models\Quiz;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quiz>
  */
@@ -64,8 +67,6 @@ class QuizFactory extends Factory
      */
     public function forInTimeQuiz($tenantId): QuizFactory
     {
-        // $memberName = "member" . self::$index;
-        // $memberEmail = $memberName . "@msaaq.com";
         return $this->state(
             [
                 'test_type' => 'in_time',
