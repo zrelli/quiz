@@ -17,7 +17,8 @@ class QuizResource extends Resource
     protected static ?int $navigationSort = 2;
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getModel()::where('is_public', true)
+        ->where('is_published', true)->count();
     }
     public static function form(Form $form): Form
     {
@@ -29,7 +30,8 @@ class QuizResource extends Resource
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
                 ->where('is_public', true)
-                ->where('is_published', false))
+                ->where('is_published', true))
+                //todo set private quizzes where user has an accepted invitation
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('test_type')->label('Type')

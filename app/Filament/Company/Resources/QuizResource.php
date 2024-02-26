@@ -9,7 +9,9 @@ use App\Models\Quiz;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Exceptions\Halt;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -77,6 +79,7 @@ class QuizResource extends Resource
 
                             ->default('1'),
                         Forms\Components\Toggle::make('is_published')
+
                         ->hiddenOn('create')
                         // ->visibleOn('view')
 
@@ -101,7 +104,30 @@ class QuizResource extends Resource
                 Tables\Columns\TextColumn::make('expired_at')->since()->label('Expiration')->sortable(),
                 Tables\Columns\TextColumn::make('questions_count')->counts('questions')->label('Questions'),
                 Tables\Columns\TextColumn::make('exams_count')->counts('exams')->label('Exams'),
-                Tables\Columns\ToggleColumn::make('is_published'),
+                Tables\Columns\ToggleColumn::make('is_published')
+                ->afterStateUpdated(function ($record, $state) {
+                    if ($state == $record->is_published && $state == true) {
+
+
+                        $quiz = Quiz::with('questions.choices')->find($record->id);
+
+                        $hasQuestionWithTwoChoices = $quiz->questions->contains(function ($question) {
+                            return $question->choices->count() >= 2;
+                        });
+
+                        if (!$hasQuestionWithTwoChoices) {
+                            Notification::make()->title("Quiz should has at least one question with choices!")
+                                ->icon('heroicon-o-exclamation-triangle')
+                                ->iconColor('danger')
+                                ->send();
+                                $record->is_published = false;
+                                $record->save();
+
+                        }
+                    }
+                })
+
+                ,
                 Tables\Columns\ToggleColumn::make('is_public'),
             ])
             ->filters([
