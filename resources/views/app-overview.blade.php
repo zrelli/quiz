@@ -10,6 +10,13 @@
     @vite(['resources/css/home.css'])
 </head>
 <body class="bg-gray-100 font-sans bg-image">
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative m-2" role="alert">
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline">{{ session('success') }}</span>
+    </div>
+@endif
+
     <div class="container h-fit  p-4 absolute inset-0 m-auto rounded-lg bg-orange-500 bg-opacity-30">
         <h1 class="text-4xl font-bold text-center mb-8 mt-4">Welcome to Our Quiz Management System!</h1>
         <p class="text-lg text-center mb-8">Are you looking for a comprehensive solution to manage quizzes efficiently?
@@ -51,7 +58,7 @@
             </ul>
         </div>
         <div class="text-end mt-8">
-            <a href="#" class="bg-gray-500 rounded-xl hover:bg-gray-700 text-white font-bold py-2 px-8">Register
+            <a href="{{ route('request-company-account') }}" class="bg-gray-500 rounded-xl hover:bg-gray-700 text-white font-bold py-2 px-8">Register
                 here</a>
         </div>
     </div>
