@@ -13,7 +13,7 @@ class RequestCompanyAccountController extends Controller
     public function saveCompanyAccountRequest(RequestCompanyAccountRequest $request)
     {
         RequestCompanyAccount::create([
-            'id' => $request->subdomain,
+            'subdomain' => $request->subdomain,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
