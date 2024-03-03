@@ -1,6 +1,7 @@
 <?php
 namespace App\Filament\Admin\Resources;
 use App\Enums\RolesEnum;
+use App\Events\SendCompanyAccountRequestMailsEvent;
 use App\Filament\Admin\Resources\RequestCompanyAccountResource\Pages;
 use App\Models\RequestCompanyAccount;
 use App\Models\Tenant;
@@ -46,6 +47,9 @@ class RequestCompanyAccountResource extends Resource
                     ->action(function (
                         RequestCompanyAccount $row
                     ) {
+
+
+
                         $tenant = Tenant::create(['id' => $row->subdomain]);
                         $tenant->domains()->create(['domain' => $row->subdomain . '.quizzes.test']);
                         $data = $row->toArray();
@@ -55,8 +59,7 @@ class RequestCompanyAccountResource extends Resource
                         $record = User::create($data);
                         $record->assignRole(RolesEnum::ADMIN);
                         $row->delete();
-                        // TODOX: send email to user
-                        // dispatch(new SendExamResultMailEvent(null, $this->record, $quizUrl));
+                        dispatch(new SendCompanyAccountRequestMailsEvent([$record->email], 'url'));
                     })->icon('heroicon-m-building-office-2')->button()
             ])
             ->bulkActions([
@@ -97,8 +100,9 @@ class RequestCompanyAccountResource extends Resource
                                     $user->assignRole(RolesEnum::ADMIN);
                                 }
                                 $records->each->delete();
-                                // TODOX: send email to user
-                                // dispatch(new SendExamResultMailEvent(null, $this->record, $quizUrl));
+
+                                dispatch(new SendCompanyAccountRequestMailsEvent(array_column($filteredUsers, 'email'), 'url'));
+
                                 return redirect()->route('filament.admin.resources.request-company-accounts.index');
                             }
                         ),

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\SendCompanyAccountRequestMailsEvent;
 use App\Events\SendExamInvitationMailsEvent;
 use App\Events\SendExamResultMailEvent;
 use App\Events\SendMemberExamReminderMailsEvent;
@@ -34,7 +35,13 @@ class EventServiceProvider extends ServiceProvider
         ],
         SendExamResultMailEvent::class => [
             SendMailListener::class,
-        ]
+        ],
+
+        SendCompanyAccountRequestMailsEvent::class => [
+            SendMailListener::class,
+        ],
+
+
     ];
     /**
      * Register any events for your application.
