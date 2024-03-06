@@ -49,4 +49,8 @@ class TenantFactory extends Factory
         $tenantIdentifier = 'tenant' . self::$index;
         return $this->state(['id' => $tenantIdentifier]);
     }
+    public static function resetIndex()
+    {
+        self::$index = 1;
+    }
 }

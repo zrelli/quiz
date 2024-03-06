@@ -48,4 +48,8 @@ class MemberFactory extends Factory
         return $this->state(['name' => $memberName, "email" => $memberEmail, 'password' => Hash::make(static::$MemberPassword),'tenant_id' => $tenantId]);
         // return $this->state(['tenant_id' => $tenantId]);
     }
+    public static function resetIndex()
+    {
+        self::$index = 1;
+    }
 }

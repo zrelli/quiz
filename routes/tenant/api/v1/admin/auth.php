@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Route::post('/register', [AdminAuthController::class, 'register']);
-Route::post('/login', [AdminAuthController::class, 'login']);
+Route::post('/login', [AdminAuthController::class, 'login'])->name('api.company.login');
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AdminAuthController::class, 'logout']);
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('api.company.logout');
 });
