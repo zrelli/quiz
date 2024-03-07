@@ -18,6 +18,7 @@ class QuizTableSeeder extends Seeder
         \App\Models\Quiz::factory(1)->forOutOfTimeQuiz('tenant1')->create();
         \App\Models\Quiz::factory(1)->forOutOfTimeQuiz('tenant1')->create();
         \App\Models\Quiz::factory(1)->forOutOfTimeQuiz('tenant1')->create();
+        \App\Models\Quiz::factory(1)->forOutOfTimeQuiz('tenant2')->create();
         \App\Models\Quiz::factory()->setDuration(1);
         \App\Models\Quiz::factory(1)->forInTimeQuiz('tenant1')->create();
         // \App\Models\Quiz::factory()->setDuration(2);
