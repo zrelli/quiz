@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers\Api\Admin;
-
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
@@ -12,7 +10,7 @@ use App\Repositories\QuizRepository;
 use App\Traits\ApiRequestValidationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
-
+use Illuminate\Support\Facades\Auth;
 class QuizController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
@@ -59,6 +57,15 @@ class QuizController extends AppBaseController
         $input = $this->processRequest($request, UpdateQuizRequest::class);
         $this->quizRepo->update($input, $quiz);
         return $this->sendSuccess('quiz updated successfully');
+    }
+    public function toggleQuizPublishing(Quiz $quiz)
+    {
+        $canToggleQuizPublishingStatus =  Auth::user()->can('canToggleQuizPublishingStatus', $quiz);
+        if ($canToggleQuizPublishingStatus) {
+            $this->quizRepo->toggleQuizPublishing($quiz);
+            return $this->sendSuccess('quiz publish status updated successfully');
+        }
+        return  $this->sendError('quiz publish status update failed');
     }
     /**
      * Remove the specified resource from storage.

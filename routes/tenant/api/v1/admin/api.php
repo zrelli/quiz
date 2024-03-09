@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\Api\Admin\ChoiceController;
 use App\Http\Controllers\Api\Admin\MemberQuizController;
 use App\Http\Controllers\Api\Admin\QuestionController;
@@ -18,14 +17,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 require __DIR__ . '/auth.php';
 Route::middleware('auth:sanctum')->get('/profile', function (Request $request) {
     return $request->user();
 });
 Route::middleware(['isAdmin', 'auth:sanctum'])->group(function () {
     Route::resource('members', MemberController::class);
-    Route::resource('quizzes', QuizController::class)->names('api.company.quizzes');;
+    Route::resource('quizzes', QuizController::class)->names('api.company.quizzes');
+    Route::get('quizzes/{quiz}/toggle-quiz-publishing', [QuizController::class, 'toggleQuizPublishing']);
     Route::get('quizzes/{quiz}/increase-quiz-attempts', [QuizController::class, 'increaseQuizAttempts']);
     Route::get('quizzes/{quiz}/close-quiz', [QuizController::class, 'closeQuiz']);
     Route::post('quizzes/{quiz}/subscribe-member-to-quiz', [QuizController::class, 'subscribeMemberToQuiz']);

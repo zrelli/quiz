@@ -1,13 +1,10 @@
 <?php
-
 namespace App\Repositories;
-
 use App\Models\Quiz;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-
 /**
  * Class QuizRepository
  */
@@ -37,10 +34,9 @@ class QuizRepository extends BaseRepository
                 'max_attempts',
                 'test_type',
                 'duration',
-                'is_published',
+                // 'is_published',
                 // 'validity_duration',
                 'started_at',
-
                 //
                 'tenant_id'
             ]
@@ -77,6 +73,12 @@ class QuizRepository extends BaseRepository
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
+    }
+    public function toggleQuizPublishing($quiz)
+    {
+        $newPublishStatus = !$quiz->is_published;
+        $quiz->is_published = $newPublishStatus;
+        $quiz->save();
     }
     public function subscribeToQuiz($quiz, $memberId = null)
     {

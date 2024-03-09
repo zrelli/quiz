@@ -21,7 +21,7 @@ class QuizResource extends JsonResource
             'slug' => $this->slug,
             'max_attempts' => $this->max_attempts,
             'test_type' => $this->test_type,
-            'is_published' => $this->is_published,
+            'is_published' => $this->is_published??false,
             'expired_at' => $this->expired_at,
             'started_at' => $this->started_at,
             'created_at' => $this->created_at,

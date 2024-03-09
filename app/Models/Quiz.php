@@ -17,7 +17,7 @@ class Quiz extends Model
         'description',
         'max_attempts',
         'duration',
-        'is_published',
+        // 'is_published',
         'test_type',
         'started_at',
         'tenant_id',
