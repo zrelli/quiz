@@ -1,10 +1,16 @@
 <?php
+
 namespace App\Repositories;
+
+use App\Events\SendExamInvitationMailsEvent;
+use App\Events\SendExamResultMailEvent;
+use App\Events\SendMemberExamReminderMailsEvent;
 use App\Models\Quiz;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+
 /**
  * Class QuizRepository
  */
@@ -34,10 +40,8 @@ class QuizRepository extends BaseRepository
                 'max_attempts',
                 'test_type',
                 'duration',
-                // 'is_published',
-                // 'validity_duration',
+                'is_public',
                 'started_at',
-                //
                 'tenant_id'
             ]
         );
@@ -47,7 +51,6 @@ class QuizRepository extends BaseRepository
                 : $quizInputArray['duration'];
             $quizInputArray['expired_at'] =  Carbon::createFromFormat('Y-m-d H:i:s', $quizInputArray['started_at'])
                 ->addHours($timeDuration)->format('Y-m-d H:i:s');
-            // unset($quizInputArray['validity_duration']);
             $quiz =  Quiz::create($quizInputArray);
             DB::commit();
             return $quiz;
@@ -62,7 +65,8 @@ class QuizRepository extends BaseRepository
             [
                 'title',
                 'description',
-                'is_published'
+                'is_published',
+                'is_public'
             ]
         );
         try {
@@ -91,5 +95,27 @@ class QuizRepository extends BaseRepository
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
+    }
+    public function inviteMembers($quiz, $ids, $examInvitationUrl = null)
+    {
+        initTenant();
+        $examInvitationUrl = $examInvitationUrl ?? route('members.exam-invitation', 'code_placeholder');
+        dispatch(new SendExamInvitationMailsEvent($ids, $quiz, $examInvitationUrl));
+    }
+    public function remindMembers($quiz, $ids, $quizUrl = null)
+    {
+        initTenant();
+        $slug = $quiz->slug;
+        $quizUrl = $quizUrl ?? route('filament.member.resources.member-quizzes.view', $slug);
+        dispatch(new SendMemberExamReminderMailsEvent($ids, $quiz, $quizUrl));
+    }
+    public function sendExamResults($quiz)
+    {
+        initTenant();
+        $slug = $quiz->slug;
+        $quizUrl = $quizUrl ?? route('filament.member.resources.member-quizzes.view', $slug);
+        $quiz->is_answers_visible = true;
+        $quiz->save();
+        dispatch(new SendExamResultMailEvent(null, $quiz, $quizUrl));
     }
 }

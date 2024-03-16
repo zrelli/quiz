@@ -26,6 +26,7 @@ class Quiz extends Model
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_public' => 'boolean',
     ];
 
 

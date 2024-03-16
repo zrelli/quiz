@@ -8,6 +8,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Get;
+use Illuminate\Database\Eloquent\Builder;
+
 class MemberResource extends Resource
 {
     protected static ?string $model = Member::class;
@@ -41,7 +43,10 @@ class MemberResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+
+        ->modifyQueryUsing(fn (Builder $query) => $query
+        ->orderByDesc('created_at')
+        )            ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email')->searchable(),

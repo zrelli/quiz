@@ -14,6 +14,8 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class MemberQuizResource extends Resource
 {
@@ -56,7 +58,10 @@ class MemberQuizResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+
+        ->modifyQueryUsing(fn (Builder $query) => $query
+        ->orderByDesc('created_at')
+        )            ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('member.name')
                     ->url(fn (MemberQuiz $record): string => route('filament.company.resources.members.view', $record->member->id)),

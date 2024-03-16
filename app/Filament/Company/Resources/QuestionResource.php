@@ -8,6 +8,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
 class QuestionResource extends Resource
 {
     protected static ?string $model = Question::class;
@@ -23,6 +25,10 @@ class QuestionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
+        ->modifyQueryUsing(fn (Builder $query) => $query
+        ->orderByDesc('created_at')
+        )
             ->columns([
                 Tables\Columns\TextColumn::make('question'),
                 Tables\Columns\TextColumn::make('description')->limit(30),
@@ -58,5 +64,5 @@ class QuestionResource extends Resource
     {
         return false;
     }
-    
+
 }

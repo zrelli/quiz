@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers\Api\Admin;
+
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
@@ -11,6 +13,7 @@ use App\Traits\ApiRequestValidationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
 use Illuminate\Support\Facades\Auth;
+
 class QuizController extends AppBaseController
 {
     use ResponseTrait, ApiRequestValidationTrait;
@@ -105,5 +108,22 @@ class QuizController extends AppBaseController
         }
         $exam = $this->quizRepo->subscribeToQuiz($quiz, $member->id);
         return $this->sendResponse($exam);
+    }
+    public function inviteMembers(Request $request, Quiz $quiz)
+    {
+        $ids = $request->ids ?? null; //Todo add validations
+        $this->quizRepo->inviteMembers($quiz, $ids);
+        return $this->sendSuccess('members has been invited');
+    }
+    public function remindMembers(Request $request, Quiz $quiz)
+    {
+        $ids = $request->ids ?? null; //Todo add validations
+        $this->quizRepo->remindMembers($quiz, $ids);
+        return $this->sendSuccess('members has been reminded');
+    }
+    public function sendExamResults(Quiz $quiz)
+    {
+        $this->quizRepo->sendExamResults($quiz);
+        return $this->sendSuccess('exam results have been sent');
     }
 }

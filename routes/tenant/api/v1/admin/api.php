@@ -26,7 +26,10 @@ Route::middleware(['isAdmin', 'auth:sanctum'])->group(function () {
     Route::resource('quizzes', QuizController::class)->names('api.company.quizzes');
     Route::get('quizzes/{quiz}/toggle-quiz-publishing', [QuizController::class, 'toggleQuizPublishing']);
     Route::get('quizzes/{quiz}/increase-quiz-attempts', [QuizController::class, 'increaseQuizAttempts']);
-    Route::get('quizzes/{quiz}/close-quiz', [QuizController::class, 'closeQuiz']);
+    Route::post('quizzes/{quiz}/invite-members', [QuizController::class, 'inviteMembers']);
+    Route::post('quizzes/{quiz}/remind-members', [QuizController::class, 'remindMembers']);
+    Route::post('quizzes/{quiz}/send-exam-results', [QuizController::class, 'sendExamResults']);
+    // Route::get('quizzes/{quiz}/close-quiz', [QuizController::class, 'closeQuiz']);
     Route::post('quizzes/{quiz}/subscribe-member-to-quiz', [QuizController::class, 'subscribeMemberToQuiz']);
     Route::resource('quizzes.questions', QuestionController::class);
     Route::resource('quizzes.questions.choices', ChoiceController::class);

@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Exceptions\Halt;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class QuizResource extends Resource
 {
@@ -92,6 +93,11 @@ class QuizResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
+        ->modifyQueryUsing(fn (Builder $query) => $query
+        ->orderByDesc('created_at')
+        )
+
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('test_type')->label('Type')

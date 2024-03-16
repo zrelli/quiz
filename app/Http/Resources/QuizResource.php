@@ -26,6 +26,8 @@ class QuizResource extends JsonResource
             'started_at' => $this->started_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'is_public' => $this->is_public,
+
             'is_subscribed' => $this->when(
                 auth() && isMemberApiRoute(),
                 fn () => $this->exams->where('member_id',  auth()->user()->id)->isNotEmpty()

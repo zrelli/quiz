@@ -27,7 +27,7 @@ class StoreQuizRequest extends FormRequest
             'duration' => 'integer|min:1|max:7',
             'test_type' => 'in:in_time,out_of_time',
             'started_at' => 'required|date',
-            // 'is_published' => 'boolean'
+            'is_public' => 'boolean'
         ];
     }
 }

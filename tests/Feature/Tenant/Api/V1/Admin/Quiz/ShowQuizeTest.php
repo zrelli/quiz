@@ -21,6 +21,7 @@ test('quizzes can show quiz details', function () {
                 $json->whereType('max_attempts', 'integer');
                 $json->whereType('test_type', 'string');
                 $json->whereType('is_published', 'boolean');
+                $json->whereType('is_public', 'boolean');
                 $json->whereType('expired_at', 'string');
                 $json->whereType('started_at', 'string');
                 $json->whereType('created_at', 'string');
