@@ -7,8 +7,10 @@ use App\Events\SendExamInvitationMailsEvent;
 use App\Events\SendExamResultMailEvent;
 use App\Events\SendMemberExamReminderMailsEvent;
 use App\Listeners\SendMailListener;
+use App\Models\Choice;
 use App\Models\MemberExamStatistics;
 use App\Models\Quiz;
+use App\Observers\ChoiceObserver;
 use App\Observers\MemberExamStatisticsObserver;
 use App\Observers\QuizObserver;
 use Illuminate\Auth\Events\Registered;
@@ -50,6 +52,7 @@ class EventServiceProvider extends ServiceProvider
     {
         MemberExamStatistics::observe(MemberExamStatisticsObserver::class);
         Quiz::observe(QuizObserver::class);
+        Choice::observe(ChoiceObserver::class);
     }
     /**
      * Determine if events and listeners should be automatically discovered.

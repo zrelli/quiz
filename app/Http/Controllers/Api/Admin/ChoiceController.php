@@ -11,7 +11,6 @@ use App\Models\Question;
 use App\Models\Quiz;
 use App\Repositories\ChoiceRepository;
 use App\Traits\ApiRequestValidationTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\ResponseTrait;
 
@@ -44,13 +43,13 @@ class ChoiceController extends AppBaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Quiz $quiz, Question $question,)
     {
+        if ($question->quiz_id != $quiz->id) {
+            return $this->sendError('This question not depend to current quiz.');
+        }
         $input = $this->processRequest($request, StoreChoiceRequest::class);
-        $parameters = func_get_args();
-        $lastParameter = end($parameters);
-        $lastParameter ?? throw new ModelNotFoundException();
-        $this->choiceRepo->setRelationQuery(['question_id' => $lastParameter]);
+        $this->choiceRepo->setRelationQuery(['question_id' => $question->id]);
         $choice =  $this->choiceRepo->store($input);
         $choice = new ChoiceResource($choice);
         return $this->sendResponse($choice);

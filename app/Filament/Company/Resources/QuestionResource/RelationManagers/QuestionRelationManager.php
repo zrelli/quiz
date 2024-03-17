@@ -20,7 +20,7 @@ class QuestionRelationManager extends RelationManager
 
 
                 Forms\Components\Textarea::make('question')
-                    ->rules(['required', 'min:10', "max:500", 'string']),
+                    ->rules(['required', 'min:10', "max:255", 'string']),
                 Forms\Components\Textarea::make('description')
                     ->rules(['required', 'min:10', "max:500", 'string']),
             ])->columns(1);

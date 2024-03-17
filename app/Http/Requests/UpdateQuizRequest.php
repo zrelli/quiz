@@ -31,7 +31,7 @@ class UpdateQuizRequest extends FormRequest
         return [
             'title' => $titleRule,
             'description' => 'nullable|string|min:10|max:500',
-            'is_published' => 'boolean',
+            // 'is_published' => 'boolean',
             'is_public' => 'boolean',
             'test_type' => 'in:in_time,out_of_time',
             'max_attempts' => 'integer|min:1|max:4',

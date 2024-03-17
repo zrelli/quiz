@@ -20,6 +20,7 @@ class UpdateChoiceRequest extends FormRequest
         return [
             'explanation' => 'nullable|string|min:10|max:500',
             'description' => 'nullable|string|min:10|max:500',
+            'is_correct' => 'boolean',
         ];
     }
 }

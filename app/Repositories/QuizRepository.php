@@ -65,8 +65,11 @@ class QuizRepository extends BaseRepository
             [
                 'title',
                 'description',
-                'is_published',
-                'is_public'
+                'max_attempts',
+                'test_type',
+                'duration',
+                'is_public',
+                'started_at'
             ]
         );
         try {
