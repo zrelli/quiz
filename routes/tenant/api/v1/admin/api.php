@@ -41,7 +41,7 @@ Route::middleware(['isAdmin', 'auth:sanctum'])->group(function () {
     //CHOICES
     Route::resource('quizzes.questions.choices', ChoiceController::class);
     //EXAMS
-    Route::resource('quizzes.online-exams', MemberQuizController::class)->only(['index', 'show']);
+    Route::resource('quizzes.online-exams', MemberQuizController::class)->only(['index']);
     //STATISTICS
     Route::get('statistics', [StatisticsController::class, 'index']);
 });

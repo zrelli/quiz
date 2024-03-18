@@ -26,12 +26,19 @@ class MemberQuizResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'is_expired' => $this->quiz->isExpired(),
+            'member' => $this->member->only('name'),
+
+            'quiz' => $this->quiz->only('title', 'test_type'),
+            'exam_statistics_count' => count($this->examStatistics)
 
 
-            $this->mergeWhen(Route::is('online-exams.show'), [
-                'questions' => QuestionResource::collection($this->questions),
 
-            ]),
+
+
+            // $this->mergeWhen(Route::is('online-exams.show'), [
+            //     'questions' => QuestionResource::collection($this->questions),
+
+            // ]),
 
         ];
     }
