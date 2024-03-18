@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Http\Resources;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Route;
-
 class MemberQuizResource extends JsonResource
 {
     /**
@@ -27,19 +24,11 @@ class MemberQuizResource extends JsonResource
             'updated_at' => $this->updated_at,
             'is_expired' => $this->quiz->isExpired(),
             'member' => $this->member->only('name'),
-
             'quiz' => $this->quiz->only('title', 'test_type'),
             'exam_statistics_count' => count($this->examStatistics)
-
-
-
-
-
             // $this->mergeWhen(Route::is('online-exams.show'), [
             //     'questions' => QuestionResource::collection($this->questions),
-
             // ]),
-
         ];
     }
 }
